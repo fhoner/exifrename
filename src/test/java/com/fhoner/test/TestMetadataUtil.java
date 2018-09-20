@@ -4,6 +4,7 @@ import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 import com.fhoner.exifrename.model.GpsRecord;
+import com.fhoner.exifrename.util.FilenamePattern;
 import com.fhoner.exifrename.util.MetadataUtil;
 import org.junit.Test;
 

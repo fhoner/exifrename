@@ -7,13 +7,11 @@ import com.fhoner.exifrename.model.GpsRecord;
 import com.fhoner.exifrename.service.GeoService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.util.Map;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FilenamePattern {
 
     private static final String TAG_GPS_LAT = "GPS Latitude";
