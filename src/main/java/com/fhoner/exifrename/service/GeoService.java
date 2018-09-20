@@ -17,12 +17,23 @@ import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 
+/**
+ * Does the communication between gps lookup server.
+ */
 public class GeoService {
 
     private static final String API_URL = "https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longtitude}&addressdetails=1";
 
     private Client client = ClientBuilder.newClient();
 
+    /**
+     * Does a reverse lookup to retrieve address from gps location.
+     *
+     * @param lat Latitude.
+     * @param lon Longtitude.
+     * @return Address of the given position.
+     * @throws GpsReverseLookupException Thrown when network error occurred.
+     */
     public Address reverseLookup(GpsRecord lat, GpsRecord lon) throws GpsReverseLookupException {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(getUrl(lat, lon));

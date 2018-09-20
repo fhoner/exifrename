@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Represents a single gps record, which means two instances are needed, one for latitude and another one for
+ * longtitude. Can only be created by using distance, minutes, seconds type.
+ * Use {@link com.fhoner.exifrename.util.MetadataUtil#convertGpsToDecimalDegree(GpsRecord)} for converting.
+ */
 @AllArgsConstructor
 @Getter
 @Setter
@@ -22,6 +27,12 @@ public class GpsRecord {
     private GpsRecord() {
     }
 
+    /**
+     * Parses a string in given format: N 43° 39' 21.62".
+     *
+     * @param str String to parse.
+     * @return An instance of {@link GpsRecord}.
+     */
     public static GpsRecord parseString(@NonNull String str) {
         List<String> split = new ArrayList<>();
         Arrays.asList(str.split(" "))

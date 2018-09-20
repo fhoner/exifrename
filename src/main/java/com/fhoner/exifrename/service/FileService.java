@@ -13,6 +13,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+/**
+ * Class which provides functions to add files within directorys. After that, copy all files with new name into a
+ * separate destination folder.
+ */
 public class FileService {
 
     private static final Set<String> FILE_EXTENSION_WHITELIST;
@@ -25,6 +29,12 @@ public class FileService {
 
     private List<File> files = new ArrayList<>();
 
+    /**
+     * Adds files in the given directory. Only jpg/jpeg are considered, case insensitive.
+     *
+     * @param directory Directory to search for files.
+     * @throws FileNotFoundException Thrown when given directory does not exist.
+     */
     public void addFiles(@NonNull String directory) throws FileNotFoundException {
         File source = new File(directory);
         if (!source.exists()) {
@@ -38,19 +48,26 @@ public class FileService {
         this.files.addAll(Arrays.asList(files));
     }
 
-    public void renameFiles(@NonNull FilenamePattern pattern, @NonNull String directory) throws Exception {
-        if (directory.charAt(directory.length() - 1) != '/') {
-            directory = directory + "/";
+    /**
+     * Renames all found files previously by copying them into destination folder.
+     *
+     * @param pattern     The pattern for ne new file names.
+     * @param destination Destination directory where files will be stored.
+     * @throws Exception Thrown on several errors (tbd).
+     */
+    public void renameFiles(@NonNull FilenamePattern pattern, @NonNull String destination) throws Exception {
+        if (destination.charAt(destination.length() - 1) != '/') {
+            destination = destination + "/";
         }
 
         for (File file : files) {
             Metadata exif = ImageMetadataReader.readMetadata(file);
             Path source = Paths.get(file.getAbsolutePath());
-            if (!Files.exists(Paths.get(directory))) {
-                (new File(directory)).mkdirs();
+            if (!Files.exists(Paths.get(destination))) {
+                (new File(destination)).mkdirs();
             }
-            Path destination = Paths.get(directory + pattern.formatFilename(exif) + "." + FilenameUtils.getExtension(file.getName()));
-            Files.copy(source, destination);
+            Path destinationPath = Paths.get(destination + pattern.formatFilename(exif) + "." + FilenameUtils.getExtension(file.getName()));
+            Files.copy(source, destinationPath);
         }
     }
 
