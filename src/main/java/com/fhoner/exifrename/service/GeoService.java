@@ -1,7 +1,7 @@
 package com.fhoner.exifrename.service;
 
 import com.fhoner.exifrename.exception.GpsReverseLookupException;
-import com.fhoner.exifrename.model.Address;
+import com.fhoner.exifrename.model.OSMRecord;
 import com.fhoner.exifrename.model.GpsRecord;
 import com.fhoner.exifrename.util.MetadataUtil;
 import org.apache.commons.text.StrSubstitutor;
@@ -31,17 +31,17 @@ public class GeoService {
      *
      * @param lat Latitude.
      * @param lon Longtitude.
-     * @return Address of the given position.
+     * @return OSMRecord of the given position.
      * @throws GpsReverseLookupException Thrown when network error occurred.
      */
-    public Address reverseLookup(GpsRecord lat, GpsRecord lon) throws GpsReverseLookupException {
-        Client client = ClientBuilder.newClient();
+    public OSMRecord reverseLookup(GpsRecord lat, GpsRecord lon) throws GpsReverseLookupException {
+        client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(getUrl(lat, lon));
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         Response response = invocationBuilder.get();
 
         if (response.getStatusInfo().getFamily() == SUCCESSFUL) {
-            return response.readEntity(Address.class);
+            return response.readEntity(OSMRecord.class);
         } else {
             throw new GpsReverseLookupException("gps reverse lookup failed");
         }

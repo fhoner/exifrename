@@ -4,13 +4,13 @@ import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 import com.fhoner.exifrename.model.GpsRecord;
-import com.fhoner.exifrename.util.FilenamePattern;
 import com.fhoner.exifrename.util.MetadataUtil;
 import org.junit.Test;
 
 import java.io.File;
 import java.util.Map;
 
+import static com.fhoner.exifrename.util.MetadataUtil.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -18,11 +18,6 @@ import static org.hamcrest.Matchers.notNullValue;
 public class TestMetadataUtil {
 
     private static final String SAMPLE_IMAGE_NAME = "images/sample.JPG";
-
-    private static final String TAG_GPS_LAT_REF = "GPS/GPS Latitude Ref";
-    private static final String TAG_GPS_LAT = "GPS/GPS Latitude";
-    private static final String TAG_GPS_LONG_REF = "GPS/GPS Longitude Ref";
-    private static final String TAG_GPS_LONG = "GPS/GPS Longitude";
 
     @Test
     public void shouldCorrectlyReadGpsTag() throws Exception {

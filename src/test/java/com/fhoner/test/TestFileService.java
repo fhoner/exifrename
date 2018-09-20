@@ -48,7 +48,7 @@ public class TestFileService {
         fileService.addFiles(TEMP_DIR);
         fileService.renameFiles(pattern, DESTINATION_DIR);
 
-        File newFile = new File(DESTINATION_DIR + "/Capbreton test.jpg");
+        File newFile = new File(DESTINATION_DIR + "/Dax test.jpg");
         assertThat(newFile, anExistingFile());
     }
 

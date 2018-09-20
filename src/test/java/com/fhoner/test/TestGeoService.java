@@ -3,7 +3,7 @@ package com.fhoner.test;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
-import com.fhoner.exifrename.model.Address;
+import com.fhoner.exifrename.model.OSMRecord;
 import com.fhoner.exifrename.model.GpsRecord;
 import com.fhoner.exifrename.service.GeoService;
 import com.fhoner.exifrename.util.MetadataUtil;
@@ -42,14 +42,14 @@ public class TestGeoService {
         lat = GpsRecord.parseString(latStr);
         lon = GpsRecord.parseString(longStr);
 
-        Address result = geoService.reverseLookup(lat, lon);
+        OSMRecord result = geoService.reverseLookup(lat, lon);
         assertThat(result, notNullValue());
         assertThat(result.getAddress().getVillage(), is("Capbreton"));
     }
 
     @Test
     public void shouldCorrectlyReverseLookup() throws Exception {
-        Address result = geoService.reverseLookup(lat, lon);
+        OSMRecord result = geoService.reverseLookup(lat, lon);
     }
 
 }
