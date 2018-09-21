@@ -2,6 +2,7 @@ package com.fhoner.exifrename.service;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
+import com.fhoner.exifrename.model.FileServiceUpdate;
 import com.fhoner.exifrename.util.FilenamePattern;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j;
@@ -19,7 +20,7 @@ import java.util.*;
  * separate destination folder.
  */
 @Log4j
-public class FileService {
+public class FileService extends Observable {
 
     private static final Set<String> FILE_EXTENSION_WHITELIST;
 
@@ -81,8 +82,14 @@ public class FileService {
             Path destinationPath = getNewFileName(pattern, destination, exif, file);
             log.info("moving " + source + " to " + destinationPath);
             Files.copy(source, destinationPath);
+            sendUpdate(new FileServiceUpdate(files.size(), files.indexOf(file) + 1));
         }
         log.info("done. created " + files.size() + " files");
+    }
+
+    private void sendUpdate(FileServiceUpdate update) {
+        setChanged();
+        notifyObservers(update);
     }
 
     private Path getNewFileName(FilenamePattern pattern, String destination, Metadata exif, File source) throws Exception {
