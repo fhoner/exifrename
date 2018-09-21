@@ -1,4 +1,4 @@
-package com.fhoner.exifrename.exception;
+package com.fhoner.exifrename.core.exception;
 
 public class GpsReverseLookupException extends Exception {
 

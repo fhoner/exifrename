@@ -1,7 +1,7 @@
 package com.fhoner.test;
 
-import com.fhoner.exifrename.service.FileService;
-import com.fhoner.exifrename.util.FilenamePattern;
+import com.fhoner.exifrename.core.service.FileService;
+import com.fhoner.exifrename.core.util.FilenamePattern;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.junit.Ignore;

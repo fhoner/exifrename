@@ -1,4 +1,4 @@
-package com.fhoner.exifrename.util;
+package com.fhoner.exifrename.core.util;
 
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;

@@ -1,9 +1,9 @@
-package com.fhoner.exifrename.service;
+package com.fhoner.exifrename.core.service;
 
-import com.fhoner.exifrename.exception.GpsReverseLookupException;
-import com.fhoner.exifrename.model.GpsRecord;
-import com.fhoner.exifrename.model.OSMRecord;
-import com.fhoner.exifrename.util.MetadataUtil;
+import com.fhoner.exifrename.core.exception.GpsReverseLookupException;
+import com.fhoner.exifrename.core.model.GpsRecord;
+import com.fhoner.exifrename.core.model.OSMRecord;
+import com.fhoner.exifrename.core.util.MetadataUtil;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.text.StrSubstitutor;
 

@@ -1,9 +1,9 @@
-package com.fhoner.exifrename.util;
+package com.fhoner.exifrename.core.util;
 
 import com.drew.metadata.Tag;
-import com.fhoner.exifrename.model.GpsRecord;
-import com.fhoner.exifrename.model.OSMRecord;
-import com.fhoner.exifrename.service.GeoService;
+import com.fhoner.exifrename.core.model.GpsRecord;
+import com.fhoner.exifrename.core.model.OSMRecord;
+import com.fhoner.exifrename.core.service.GeoService;
 import lombok.extern.log4j.Log4j;
 
 import java.time.LocalDateTime;

@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fhoner.exifrename.controller.RenameController">
+<AnchorPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fhoner.exifrename.renameui.controller.RenameController">
    <children>
       <VBox prefHeight="120.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0">
          <padding>

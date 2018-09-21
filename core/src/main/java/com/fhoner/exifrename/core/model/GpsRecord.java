@@ -1,5 +1,6 @@
-package com.fhoner.exifrename.model;
+package com.fhoner.exifrename.core.model;
 
+import com.fhoner.exifrename.core.util.MetadataUtil;
 import lombok.*;
 import lombok.extern.log4j.Log4j;
 
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * Represents a single gps record, which means two instances are needed, one for latitude and another one for
  * longtitude. Can only be created by using distance, minutes, seconds type.
- * Use {@link com.fhoner.exifrename.util.MetadataUtil#convertGpsToDecimalDegree(GpsRecord)} for converting.
+ * Use {@link MetadataUtil#convertGpsToDecimalDegree(GpsRecord)} for converting.
  */
 @AllArgsConstructor
 @Getter

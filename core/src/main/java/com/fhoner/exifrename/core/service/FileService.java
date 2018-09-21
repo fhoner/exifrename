@@ -1,9 +1,9 @@
-package com.fhoner.exifrename.service;
+package com.fhoner.exifrename.core.service;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
-import com.fhoner.exifrename.model.FileServiceUpdate;
-import com.fhoner.exifrename.util.FilenamePattern;
+import com.fhoner.exifrename.core.model.FileServiceUpdate;
+import com.fhoner.exifrename.core.util.FilenamePattern;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.io.FilenameUtils;

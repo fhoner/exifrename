@@ -1,6 +1,6 @@
-package com.fhoner.exifrename;
+package com.fhoner.exifrename.renameui;
 
-import com.fhoner.exifrename.controller.RenameController;
+import com.fhoner.exifrename.renameui.controller.RenameController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

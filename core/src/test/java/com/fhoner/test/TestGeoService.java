@@ -3,10 +3,10 @@ package com.fhoner.test;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
-import com.fhoner.exifrename.model.GpsRecord;
-import com.fhoner.exifrename.model.OSMRecord;
-import com.fhoner.exifrename.service.GeoService;
-import com.fhoner.exifrename.util.MetadataUtil;
+import com.fhoner.exifrename.core.model.GpsRecord;
+import com.fhoner.exifrename.core.model.OSMRecord;
+import com.fhoner.exifrename.core.service.GeoService;
+import com.fhoner.exifrename.core.util.MetadataUtil;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -3,15 +3,15 @@ package com.fhoner.test;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
-import com.fhoner.exifrename.model.GpsRecord;
-import com.fhoner.exifrename.util.MetadataUtil;
+import com.fhoner.exifrename.core.model.GpsRecord;
+import com.fhoner.exifrename.core.util.MetadataUtil;
 import org.junit.Test;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import static com.fhoner.exifrename.util.MetadataUtil.*;
+import static com.fhoner.exifrename.core.util.MetadataUtil.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.notNullValue;

@@ -1,4 +1,4 @@
-package com.fhoner.exifrename.model;
+package com.fhoner.exifrename.core.model;
 
 
 import lombok.AllArgsConstructor;

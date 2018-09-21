@@ -1,7 +1,7 @@
 package com.fhoner.test;
 
-import com.fhoner.exifrename.service.FileService;
-import com.fhoner.exifrename.util.FilenamePattern;
+import com.fhoner.exifrename.core.service.FileService;
+import com.fhoner.exifrename.core.util.FilenamePattern;
 import org.junit.Before;
 import org.junit.Test;
 

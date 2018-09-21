@@ -1,8 +1,8 @@
-package com.fhoner.exifrename.controller;
+package com.fhoner.exifrename.renameui.controller;
 
-import com.fhoner.exifrename.model.FileServiceUpdate;
-import com.fhoner.exifrename.service.FileService;
-import com.fhoner.exifrename.util.FilenamePattern;
+import com.fhoner.exifrename.core.model.FileServiceUpdate;
+import com.fhoner.exifrename.core.service.FileService;
+import com.fhoner.exifrename.core.util.FilenamePattern;
 import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleBooleanProperty;
