@@ -8,6 +8,7 @@ import com.fhoner.exifrename.util.MetadataUtil;
 import org.junit.Test;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.Map;
 
 import static com.fhoner.exifrename.util.MetadataUtil.*;
@@ -41,8 +42,8 @@ public class TestMetadataUtil {
         GpsRecord rec = GpsRecord.builder()
                 .ref(GpsRecord.Ref.N)
                 .degrees(32)
-                .minutes(18)
-                .seconds(23.1)
+                .minutes(new BigDecimal(18))
+                .seconds(new BigDecimal(23.1))
                 .build();
         assertThat(MetadataUtil.convertGpsToDecimalDegree(rec), closeTo(32.30642, 0.00001));
     }
@@ -52,8 +53,8 @@ public class TestMetadataUtil {
         GpsRecord rec = GpsRecord.builder()
                 .ref(GpsRecord.Ref.W)
                 .degrees(122)
-                .minutes(36)
-                .seconds(52.5)
+                .minutes(new BigDecimal(36))
+                .seconds(new BigDecimal(52.5))
                 .build();
         assertThat(MetadataUtil.convertGpsToDecimalDegree(rec), closeTo(-122.61458, 0.00001));
     }

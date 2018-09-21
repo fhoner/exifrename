@@ -82,6 +82,7 @@ public class FileService {
             log.info("moving " + source + " to " + destinationPath);
             Files.copy(source, destinationPath);
         }
+        log.info("done. created " + files.size() + " files");
     }
 
     private Path getNewFileName(FilenamePattern pattern, String destination, Metadata exif, File source) throws Exception {
@@ -90,11 +91,12 @@ public class FileService {
         Integer number = null;
         boolean recreate = false;
 
+        String formattedFilename = pattern.formatFilename(exif);
         do {
             String numberStr = number == null ? "" : " (" + number + ")";
             StringBuilder dest = new StringBuilder();
             dest.append(destination);
-            dest.append(pattern.formatFilename(exif));
+            dest.append(formattedFilename);
             dest.append(numberStr);
             dest.append(extension);
 

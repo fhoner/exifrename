@@ -2,7 +2,6 @@ package com.fhoner.exifrename.util;
 
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
-import com.fhoner.exifrename.service.GeoService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;

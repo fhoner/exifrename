@@ -51,7 +51,7 @@ public class MetadataUtil {
      */
     public static double convertGpsToDecimalDegree(@NonNull GpsRecord rec) {
         int factor = rec.getRef() == GpsRecord.Ref.N || rec.getRef() == GpsRecord.Ref.E ? 1 : -1;
-        double val = factor * (Math.abs(rec.getDegrees()) + (rec.getMinutes() / 60.0) + (rec.getSeconds() / 3600.0));
+        double val = factor * (Math.abs(rec.getDegrees()) + (rec.getMinutes().doubleValue() / 60.0) + (rec.getSeconds().doubleValue() / 3600.0));
         return val;
     }
 

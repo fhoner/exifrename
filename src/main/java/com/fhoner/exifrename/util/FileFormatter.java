@@ -29,7 +29,8 @@ public class FileFormatter {
     private static final String MINUTE = "%M";
     private static final String SECOND = "%s";
 
-    private GeoService geoService = new GeoService();
+    private static GeoService geoService = new GeoService();
+
     private Map<String, Tag> tags;
     private String value;
 

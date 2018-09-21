@@ -26,6 +26,7 @@ public class GeoService {
 
     private static final String API_URL = "https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longtitude}&addressdetails=1";
 
+    private HashMap<String, OSMRecord> cache = new HashMap<>();
     private Client client = ClientBuilder.newClient();
 
     /**
@@ -37,6 +38,13 @@ public class GeoService {
      * @throws GpsReverseLookupException Thrown when network error occurred.
      */
     public OSMRecord reverseLookup(GpsRecord lat, GpsRecord lon) throws GpsReverseLookupException {
+        String key = lat.toString() + lon.toString();
+        OSMRecord cached = cache.get(key);
+        if (cached != null) {
+            log.debug("loaded address from cache");
+            return cached;
+        }
+
         client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(getUrl(lat, lon));
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
@@ -45,6 +53,7 @@ public class GeoService {
 
         if (response.getStatusInfo().getFamily() == SUCCESSFUL) {
             OSMRecord result = response.readEntity(OSMRecord.class);
+            cache.put(key, result);
             log.debug("got address " + result);
             return result;
         } else {

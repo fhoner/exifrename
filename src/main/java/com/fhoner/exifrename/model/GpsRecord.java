@@ -3,6 +3,7 @@ package com.fhoner.exifrename.model;
 import lombok.*;
 import lombok.extern.log4j.Log4j;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,14 +18,16 @@ import java.util.List;
 @Setter
 @Builder
 @Log4j
+@EqualsAndHashCode
+@ToString
 public class GpsRecord {
 
     public enum Ref {N, S, E, W}
 
     private Ref ref;
     private int degrees;
-    private double minutes;
-    private double seconds;
+    private BigDecimal minutes;
+    private BigDecimal seconds;
 
     private GpsRecord() {
     }
@@ -45,8 +48,8 @@ public class GpsRecord {
         return GpsRecord.builder()
                 .ref(Ref.valueOf(split.get(0)))
                 .degrees(Integer.parseInt(split.get(1)))
-                .minutes(Double.parseDouble(split.get(2)))
-                .seconds(Double.parseDouble(split.get(3)))
+                .minutes(new BigDecimal(split.get(2)))
+                .seconds(new BigDecimal(split.get(3)))
                 .build();
     }
 
