@@ -4,6 +4,7 @@ import com.drew.metadata.Tag;
 import com.fhoner.exifrename.model.GpsRecord;
 import com.fhoner.exifrename.model.OSMRecord;
 import com.fhoner.exifrename.service.GeoService;
+import lombok.extern.log4j.Log4j;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@Log4j
 public class FileFormatter {
 
     private static final String VILLAGE = "%v";
@@ -50,11 +52,14 @@ public class FileFormatter {
 
     private void insertLocationData() throws Exception {
         if (hasLocation()) {
+            log.debug("location information needed");
             OSMRecord addr = getAddress();
             value = value.replace(VILLAGE, addr.getAddress().getVillage());
             value = value.replace(COUNTY, addr.getAddress().getCounty());
             value = value.replace(STATE, addr.getAddress().getState());
             value = value.replace(COUNTRY, addr.getAddress().getCountry());
+        } else {
+            log.debug("no location information needed; skip API call");
         }
     }
 

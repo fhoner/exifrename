@@ -1,6 +1,7 @@
 package com.fhoner.exifrename.model;
 
 import lombok.*;
+import lombok.extern.log4j.Log4j;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,9 +16,10 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@Log4j
 public class GpsRecord {
 
-    public enum Ref {N, W}
+    public enum Ref {N, S, E, W}
 
     private Ref ref;
     private int degrees;
@@ -34,6 +36,7 @@ public class GpsRecord {
      * @return An instance of {@link GpsRecord}.
      */
     public static GpsRecord parseString(@NonNull String str) {
+        log.debug("parsing GpsRecord: " + str);
         List<String> split = new ArrayList<>();
         Arrays.asList(str.split(" "))
                 .stream()

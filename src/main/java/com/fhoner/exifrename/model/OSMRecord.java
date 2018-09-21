@@ -1,5 +1,6 @@
 package com.fhoner.exifrename.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -12,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @AllArgsConstructor
 @NoArgsConstructor
 @XmlRootElement
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OSMRecord {
 
     @XmlElement(name = "place_id")

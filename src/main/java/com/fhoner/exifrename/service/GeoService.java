@@ -1,9 +1,10 @@
 package com.fhoner.exifrename.service;
 
 import com.fhoner.exifrename.exception.GpsReverseLookupException;
-import com.fhoner.exifrename.model.OSMRecord;
 import com.fhoner.exifrename.model.GpsRecord;
+import com.fhoner.exifrename.model.OSMRecord;
 import com.fhoner.exifrename.util.MetadataUtil;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.text.StrSubstitutor;
 
 import javax.ws.rs.client.Client;
@@ -20,6 +21,7 @@ import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 /**
  * Does the communication between gps lookup server.
  */
+@Log4j
 public class GeoService {
 
     private static final String API_URL = "https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longtitude}&addressdetails=1";
@@ -38,10 +40,13 @@ public class GeoService {
         client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(getUrl(lat, lon));
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+        log.debug("sending request to " + webTarget.getUri());
         Response response = invocationBuilder.get();
 
         if (response.getStatusInfo().getFamily() == SUCCESSFUL) {
-            return response.readEntity(OSMRecord.class);
+            OSMRecord result = response.readEntity(OSMRecord.class);
+            log.debug("got address " + result);
+            return result;
         } else {
             throw new GpsReverseLookupException("gps reverse lookup failed");
         }

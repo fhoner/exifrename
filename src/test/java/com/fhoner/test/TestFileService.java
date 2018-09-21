@@ -46,7 +46,7 @@ public class TestFileService {
     public void shouldRenameFiles() throws Exception {
         FilenamePattern pattern = FilenamePattern.fromString("%c test");
         fileService.addFiles(TEMP_DIR);
-        fileService.renameFiles(pattern, DESTINATION_DIR);
+        fileService.createFiles(pattern, DESTINATION_DIR);
 
         File newFile = new File(DESTINATION_DIR + "/Dax test.jpg");
         assertThat(newFile, anExistingFile());
@@ -64,17 +64,17 @@ public class TestFileService {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowOnNullParameterRename() throws Exception {
-        fileService.renameFiles(null, null);
+        fileService.createFiles(null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowOnNullParameterRename2() throws Exception {
-        fileService.renameFiles(FilenamePattern.fromString("%c"), null);
+        fileService.createFiles(FilenamePattern.fromString("%c"), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowOnNullParameterRename3() throws Exception {
-        fileService.renameFiles(null, "");
+        fileService.createFiles(null, "");
     }
 
 

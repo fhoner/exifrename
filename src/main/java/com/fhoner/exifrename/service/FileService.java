@@ -4,6 +4,7 @@ import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.fhoner.exifrename.util.FilenamePattern;
 import lombok.NonNull;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -17,6 +18,7 @@ import java.util.*;
  * Class which provides functions to add files within directorys. After that, copy all files with new name into a
  * separate destination folder.
  */
+@Log4j
 public class FileService {
 
     private static final Set<String> FILE_EXTENSION_WHITELIST;
@@ -36,6 +38,7 @@ public class FileService {
      * @throws FileNotFoundException Thrown when given directory does not exist.
      */
     public void addFiles(@NonNull String directory) throws FileNotFoundException {
+        log.info("scanning directory " + directory);
         File source = new File(directory);
         if (!source.exists()) {
             throw new FileNotFoundException();
@@ -43,8 +46,15 @@ public class FileService {
 
         File[] files = source.listFiles((dir, name) -> {
             String extension = FilenameUtils.getExtension(name).toLowerCase();
-            return FILE_EXTENSION_WHITELIST.contains(extension);
+            if (FILE_EXTENSION_WHITELIST.contains(extension)) {
+                log.debug("file added: " + dir + "/" + name);
+                return true;
+            } else {
+                log.debug("file not supported: " + dir + "/" + name);
+                return false;
+            }
         });
+        log.info(files.length + " files added");
         this.files.addAll(Arrays.asList(files));
     }
 
@@ -55,20 +65,48 @@ public class FileService {
      * @param destination Destination directory where files will be stored.
      * @throws Exception Thrown on several errors (tbd).
      */
-    public void renameFiles(@NonNull FilenamePattern pattern, @NonNull String destination) throws Exception {
+    public void createFiles(@NonNull FilenamePattern pattern, @NonNull String destination) throws Exception {
         if (destination.charAt(destination.length() - 1) != '/') {
             destination = destination + "/";
         }
 
+        log.info("starting creating files in " + destination);
         for (File file : files) {
             Metadata exif = ImageMetadataReader.readMetadata(file);
             Path source = Paths.get(file.getAbsolutePath());
             if (!Files.exists(Paths.get(destination))) {
+                log.debug("destination directory does not exist. creating directory " + destination);
                 (new File(destination)).mkdirs();
             }
-            Path destinationPath = Paths.get(destination + pattern.formatFilename(exif) + "." + FilenameUtils.getExtension(file.getName()));
+            Path destinationPath = getNewFileName(pattern, destination, exif, file);
+            log.info("moving " + source + " to " + destinationPath);
             Files.copy(source, destinationPath);
         }
+    }
+
+    private Path getNewFileName(FilenamePattern pattern, String destination, Metadata exif, File source) throws Exception {
+        Path result;
+        String extension = "." + FilenameUtils.getExtension(source.getName());
+        Integer number = null;
+        boolean recreate = false;
+
+        do {
+            String numberStr = number == null ? "" : " (" + number + ")";
+            StringBuilder dest = new StringBuilder();
+            dest.append(destination);
+            dest.append(pattern.formatFilename(exif));
+            dest.append(numberStr);
+            dest.append(extension);
+
+            result = Paths.get(dest.toString());
+            if (Files.exists(result)) {
+                number = number == null ? 1 : number + 1;
+                recreate = true;
+            } else {
+                recreate = false;
+            }
+        } while (recreate);
+        return result;
     }
 
 }
