@@ -24,7 +24,7 @@ public class MetadataUtil {
     public static final String TAG_GPS_LAT = "GPS/GPS Latitude";
     public static final String TAG_GPS_LONG_REF = "GPS/GPS Longitude Ref";
     public static final String TAG_GPS_LONG = "GPS/GPS Longitude";
-    public static final String TAGS_DATE_TIME = "Exif IFD0/Date/Time";
+    public static final String TAGS_DATE_TIME = "Exif SubIFD/Date/Time Digitized";
 
     private static final String DATE_TIME_FORMAT = "yyyy:MM:dd HH:mm:ss";
 
