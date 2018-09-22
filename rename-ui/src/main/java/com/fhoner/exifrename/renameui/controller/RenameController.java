@@ -46,6 +46,7 @@ public class RenameController implements Initializable, Observer {
     private Label lblProgress;
 
     private SimpleBooleanProperty isRunningProp = new SimpleBooleanProperty();
+    private File lastSelectedFolder = new File(System.getProperty("user.home"));
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -56,22 +57,28 @@ public class RenameController implements Initializable, Observer {
     void btnBrowseSource(ActionEvent event) {
         DirectoryChooser chooser = new DirectoryChooser();
         chooser.setTitle("Select source directory");
-        File defaultDirectory = new File(System.getProperty("user.home"));
+        File defaultDirectory = lastSelectedFolder;
         chooser.setInitialDirectory(defaultDirectory);
         Stage stage = new Stage();
         File selectedDirectory = chooser.showDialog(stage);
-        txtSource.setText(selectedDirectory.getAbsolutePath());
+        if (selectedDirectory != null) {
+            lastSelectedFolder = selectedDirectory;
+            txtSource.setText(selectedDirectory.getAbsolutePath());
+        }
     }
 
     @FXML
     void btnBrowseDestination(ActionEvent event) {
         DirectoryChooser chooser = new DirectoryChooser();
         chooser.setTitle("Select destination directory");
-        File defaultDirectory = new File(System.getProperty("user.home"));
+        File defaultDirectory = lastSelectedFolder;
         chooser.setInitialDirectory(defaultDirectory);
         Stage stage = new Stage();
         File selectedDirectory = chooser.showDialog(stage);
-        txtDestination.setText(selectedDirectory.getAbsolutePath());
+        if (selectedDirectory != null) {
+            lastSelectedFolder = selectedDirectory;
+            txtDestination.setText(selectedDirectory.getAbsolutePath());
+        }
     }
 
     @FXML
