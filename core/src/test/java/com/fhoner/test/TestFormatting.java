@@ -64,7 +64,7 @@ public class TestFormatting {
 
     @Test
     public void shouldFormatAddress() throws Exception {
-        FileFormatter formatter = new FileFormatter("%v %c %S %C", tags);
+        FileFormatter formatter = new FileFormatter("%t %c %S %C", tags);
         Whitebox.setInternalState(formatter, "tags", tags);
         Whitebox.setInternalState(formatter, "geoService", geoServiceMock);
         assertThat(formatter.format(), is("Capbreton Dax New Aquitaine France"));
@@ -72,7 +72,7 @@ public class TestFormatting {
 
     @Test
     public void shouldFormatMixed() throws Exception {
-        FileFormatter formatter = new FileFormatter("%v Felix %y-Honer %c %S %C", tags);
+        FileFormatter formatter = new FileFormatter("%t Felix %y-Honer %c %S %C", tags);
         Whitebox.setInternalState(formatter, "tags", tags);
         Whitebox.setInternalState(formatter, "geoService", geoServiceMock);
         assertThat(formatter.format(), is("Capbreton Felix 2018-Honer Dax New Aquitaine France"));

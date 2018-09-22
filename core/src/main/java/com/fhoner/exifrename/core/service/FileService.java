@@ -75,15 +75,16 @@ public class FileService extends Observable {
         if (destination.charAt(destination.length() - 1) != '/') {
             destination = destination + "/";
         }
+        if (!Files.exists(Paths.get(destination))) {
+            log.debug("destination directory does not exist. creating directory " + destination);
+            (new File(destination)).mkdirs();
+        }
 
         log.info("starting creating files in " + destination);
         for (File file : files) {
             Metadata exif = ImageMetadataReader.readMetadata(file);
+            String s = file.getAbsolutePath();
             Path source = Paths.get(file.getAbsolutePath());
-            if (!Files.exists(Paths.get(destination))) {
-                log.debug("destination directory does not exist. creating directory " + destination);
-                (new File(destination)).mkdirs();
-            }
             Path destinationPath = getNewFileName(pattern, destination, exif, file);
             log.info("moving " + source + " to " + destinationPath);
             Files.copy(source, destinationPath);

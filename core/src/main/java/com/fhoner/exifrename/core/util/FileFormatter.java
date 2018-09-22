@@ -3,6 +3,7 @@ package com.fhoner.exifrename.core.util;
 import com.drew.metadata.Tag;
 import com.fhoner.exifrename.core.exception.GpsReverseLookupException;
 import com.fhoner.exifrename.core.exception.TagNotFoundException;
+import com.fhoner.exifrename.core.model.Address;
 import com.fhoner.exifrename.core.model.GpsRecord;
 import com.fhoner.exifrename.core.model.OSMRecord;
 import com.fhoner.exifrename.core.service.GeoService;
@@ -15,16 +16,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Log4j
 @Getter
 public class FileFormatter {
 
-    private static final String VILLAGE = "%v";
+    private static final String DATA_UNKNOWN_TEXT = "[unknown]";
+
+    private static final String TOWN = "%t";
     private static final String COUNTY = "%c";
     private static final String STATE = "%S";
     private static final String COUNTRY = "%C";
-    private static final List<String> LOCATION_DATA = Arrays.asList(new String[]{VILLAGE, COUNTY, STATE, COUNTRY});
+    private static final String COUNTRY_CODE = "%d";
+    private static final List<String> LOCATION_DATA = Arrays.asList(new String[]{TOWN, COUNTY, STATE, COUNTRY});
 
     private static final String YEAR_FOUR = "%y";
     private static final String YEAR_TWO = "%Y";
@@ -33,6 +38,7 @@ public class FileFormatter {
     private static final String HOUR = "%h";
     private static final String MINUTE = "%M";
     private static final String SECOND = "%s";
+    private static final List<String> DATETIME_DATA = Arrays.asList(new String[]{YEAR_FOUR, YEAR_TWO, MONTH, DAY, HOUR, MINUTE, SECOND});
 
     private static GeoService geoService = new GeoService();
 
@@ -64,19 +70,29 @@ public class FileFormatter {
             errors.add(ex);
         }
 
+        removeVariables();
         return value;
     }
 
     private void insertLocationData() throws TagNotFoundException, GpsReverseLookupException {
         if (hasLocation()) {
             log.debug("location information needed");
-            OSMRecord addr = getAddress();
-            value = value.replace(VILLAGE, addr.getAddress().getVillage());
-            value = value.replace(COUNTY, addr.getAddress().getCounty());
-            value = value.replace(STATE, addr.getAddress().getState());
-            value = value.replace(COUNTRY, addr.getAddress().getCountry());
+            OSMRecord osmrec = getAddress();
+            Address address = osmrec.getAddress();
+            String v = address.getVillage();
+            insertValueNullsafe(TOWN, address.getVillage());
+            insertValueNullsafe(COUNTY, address.getCounty());
+            insertValueNullsafe(STATE, address.getState());
+            insertValueNullsafe(COUNTRY, address.getCountry());
+            insertValueNullsafe(COUNTRY_CODE, address.getCountryCode());
         } else {
             log.debug("no location information needed; skip API call");
+        }
+    }
+
+    private void insertValueNullsafe(String variable, String value) {
+        if (value != null) {
+            this.value = this.value.replace(variable, value);
         }
     }
 
@@ -104,6 +120,11 @@ public class FileFormatter {
             }
         }
         return false;
+    }
+
+    private void removeVariables() {
+        Stream.concat(LOCATION_DATA.stream(), DATETIME_DATA.stream())
+                .forEach(s -> this.value = this.value.replace(s, DATA_UNKNOWN_TEXT));
     }
 
     private String formatDateTime(String pattern, LocalDateTime instance) {

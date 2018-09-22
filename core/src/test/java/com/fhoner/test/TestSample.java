@@ -5,6 +5,7 @@ import com.fhoner.exifrename.core.service.FileService;
 import com.fhoner.exifrename.core.util.FilenamePattern;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
@@ -14,10 +15,11 @@ import java.io.IOException;
 public class TestSample {
 
     @Test
+    @Ignore
     public void sample() {
         String source = "/home/fhoner/Desktop/source";
         String dest = "/home/fhoner/Desktop/dest";
-        FilenamePattern pattern = FilenamePattern.fromString("%y-%m-%d - Motorradtour - %S, %c");
+        FilenamePattern pattern = FilenamePattern.fromString("%y-%m-%d - Motorradtour - %S, %c %C");
 
         try {
             FileService service = new FileService();
