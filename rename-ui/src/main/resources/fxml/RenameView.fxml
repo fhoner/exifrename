@@ -111,7 +111,7 @@
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>
                         <Pane prefHeight="26.0" prefWidth="161.0" />
-                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="hour (%h)">
+                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="day (%d)">
                             <HBox.margin>
                                 <Insets bottom="2.0" right="4.0" top="2.0" />
                             </HBox.margin>
@@ -129,7 +129,7 @@
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>
                         <Pane prefHeight="26.0" prefWidth="161.0" />
-                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="day (%d)">
+                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="hour (%h)">
                             <HBox.margin>
                                 <Insets bottom="2.0" right="4.0" top="2.0" />
                             </HBox.margin>
