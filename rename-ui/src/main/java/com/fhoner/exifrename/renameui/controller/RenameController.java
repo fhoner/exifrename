@@ -3,6 +3,7 @@ package com.fhoner.exifrename.renameui.controller;
 import com.fhoner.exifrename.core.model.FileServiceUpdate;
 import com.fhoner.exifrename.core.service.FileService;
 import com.fhoner.exifrename.core.util.FilenamePattern;
+import com.fhoner.exifrename.renameui.util.DialogUtil;
 import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -107,8 +108,14 @@ public class RenameController implements Initializable, Observer {
                     fs.addFiles(txtSource.getText());
                     FilenamePattern pattern = FilenamePattern.fromString(txtPattern.getText());
                     fs.createFiles(pattern, txtDestination.getText());
+                    Platform.runLater(() -> DialogUtil.showInfoDialog(
+                            "Done",
+                            "Success",
+                            fs.getFiles().size() + " images have been copied to destination folder.",
+                            null));
                 } catch (Exception ex) {
                     log.error("could not finish", ex);
+                    Platform.runLater(() -> DialogUtil.showErrorDialog("Error", "Error", "An error occurred:" + ex.getMessage(), null));
                 } finally {
                     isRunningProp.set(false);
                 }
