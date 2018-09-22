@@ -90,9 +90,11 @@ public class FileFormatter {
         }
     }
 
-    private void insertValueNullsafe(String variable, String value) {
-        if (value != null) {
-            this.value = this.value.replace(variable, value);
+    private void insertValueNullsafe(String variable, String content) {
+        if (content != null) {
+            this.value = this.value.replace(variable, content);
+        } else {
+            log.info("information not available for " + variable);
         }
     }
 

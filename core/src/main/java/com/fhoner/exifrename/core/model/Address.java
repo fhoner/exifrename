@@ -21,6 +21,8 @@ public class Address {
     private String neighbourhood;
     private String village;
     private String town;
+    private String city;
+    private String city_district;
     private String county;
     private String state;
     private String country;
@@ -40,6 +42,8 @@ public class Address {
     private String getTownOrVillage() {
         if (village != null && !String.valueOf(village).isEmpty()) {
             return village;
+        } else if (city != null && !String.valueOf(city).isEmpty()) {
+            return city;
         } else if (town != null && !String.valueOf(town).isEmpty()) {
             return town;
         }
