@@ -4,6 +4,7 @@ import com.fhoner.exifrename.core.model.FileServiceUpdate;
 import com.fhoner.exifrename.core.service.FileService;
 import com.fhoner.exifrename.core.util.FilenamePattern;
 import com.fhoner.exifrename.renameui.util.DialogUtil;
+import com.fhoner.exifrename.renameui.util.GitRevisionUtil;
 import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -18,6 +19,7 @@ import javafx.stage.Stage;
 import lombok.extern.log4j.Log4j;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
@@ -46,11 +48,15 @@ public class RenameController implements Initializable, Observer {
     @FXML
     private Label lblProgress;
 
+    @FXML
+    private Label lblVersion;
+
     private SimpleBooleanProperty isRunningProp = new SimpleBooleanProperty();
     private File lastSelectedFolder = new File(System.getProperty("user.home"));
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        showVersion();
         addButtonDisabledBinding();
     }
 
@@ -150,6 +156,16 @@ public class RenameController implements Initializable, Observer {
         FileServiceUpdate update = (FileServiceUpdate) arg;
         Platform.runLater(() -> lblProgress.setText("Progress: " + update.getFilesDone() + "/" + update.getFilesCount()));
         log.debug("fileservice update: " + update.getFilesDone() + "/" + update.getFilesCount());
+    }
+
+    private void showVersion() {
+        try {
+            GitRevisionUtil git = new GitRevisionUtil();
+            String hash = "#" + git.get(GitRevisionUtil.Key.HASH);
+            lblVersion.setText(hash);
+        } catch (IOException ex) {
+            lblVersion.setText("version unavailable");
+        }
     }
 
 }
