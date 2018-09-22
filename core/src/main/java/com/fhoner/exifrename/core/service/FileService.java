@@ -1,15 +1,18 @@
 package com.fhoner.exifrename.core.service;
 
 import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import com.fhoner.exifrename.core.model.FileServiceUpdate;
 import com.fhoner.exifrename.core.util.FilenamePattern;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,6 +23,7 @@ import java.util.*;
  * separate destination folder.
  */
 @Log4j
+@Getter
 public class FileService extends Observable {
 
     private static final Set<String> FILE_EXTENSION_WHITELIST;
@@ -31,6 +35,7 @@ public class FileService extends Observable {
     }
 
     private List<File> files = new ArrayList<>();
+    private Map<String, Exception[]> errors = new HashMap<>();
 
     /**
      * Adds files in the given directory. Only jpg/jpeg are considered, case insensitive.
@@ -66,7 +71,7 @@ public class FileService extends Observable {
      * @param destination Destination directory where files will be stored.
      * @throws Exception Thrown on several errors (tbd).
      */
-    public void createFiles(@NonNull FilenamePattern pattern, @NonNull String destination) throws Exception {
+    public void createFiles(@NonNull FilenamePattern pattern, @NonNull String destination) throws IOException, ImageProcessingException {
         if (destination.charAt(destination.length() - 1) != '/') {
             destination = destination + "/";
         }
@@ -92,13 +97,14 @@ public class FileService extends Observable {
         notifyObservers(update);
     }
 
-    private Path getNewFileName(FilenamePattern pattern, String destination, Metadata exif, File source) throws Exception {
+    private Path getNewFileName(FilenamePattern pattern, String destination, Metadata exif, File source) {
         Path result;
         String extension = "." + FilenameUtils.getExtension(source.getName());
         Integer number = null;
         boolean recreate = false;
 
         String formattedFilename = pattern.formatFilename(exif);
+        addErrors(source, pattern);
         do {
             String numberStr = number == null ? "" : " (" + number + ")";
             StringBuilder dest = new StringBuilder();
@@ -116,6 +122,13 @@ public class FileService extends Observable {
             }
         } while (recreate);
         return result;
+    }
+
+    private void addErrors(File file, FilenamePattern pattern) {
+        List<Exception> errors = new ArrayList<>(pattern.getErrors());
+        if (errors.size() > 0) {
+            this.errors.put(file.getAbsolutePath(), errors.toArray(new Exception[errors.size()]));
+        }
     }
 
 }

@@ -2,19 +2,25 @@ package com.fhoner.exifrename.core.util;
 
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NonNull;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Used to represent a schema for naming.
  */
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public class FilenamePattern {
 
     private String pattern;
+    private Set<Exception> errors = new HashSet<>();
+
+    private FilenamePattern(String str) {
+        this.pattern = str;
+    }
 
     /**
      * Creates a new instance.
@@ -33,10 +39,13 @@ public class FilenamePattern {
      * @return The formatted filename.
      * @throws Exception Thrown when values could not be extracted from tags.
      */
-    public String formatFilename(@NonNull Metadata exifData) throws Exception {
+    public String formatFilename(@NonNull Metadata exifData) {
+        errors.clear();
         Map<String, Tag> tags = MetadataUtil.getTags(exifData);
         FileFormatter formatter = new FileFormatter(this.pattern, tags);
-        return formatter.format();
+        String formatted = formatter.format();
+        this.errors.addAll(formatter.getErrors());
+        return formatted;
     }
 
 }

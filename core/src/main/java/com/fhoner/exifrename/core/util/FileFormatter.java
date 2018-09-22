@@ -1,18 +1,23 @@
 package com.fhoner.exifrename.core.util;
 
 import com.drew.metadata.Tag;
+import com.fhoner.exifrename.core.exception.GpsReverseLookupException;
+import com.fhoner.exifrename.core.exception.TagNotFoundException;
 import com.fhoner.exifrename.core.model.GpsRecord;
 import com.fhoner.exifrename.core.model.OSMRecord;
 import com.fhoner.exifrename.core.service.GeoService;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 @Log4j
+@Getter
 public class FileFormatter {
 
     private static final String VILLAGE = "%v";
@@ -33,6 +38,7 @@ public class FileFormatter {
 
     private Map<String, Tag> tags;
     private String value;
+    private List<Exception> errors = new ArrayList<>();
 
     public FileFormatter(String value, Map<String, Tag> tags) {
         this.value = value;
@@ -45,13 +51,23 @@ public class FileFormatter {
      * @return Formatted string.
      * @throws Exception
      */
-    public String format() throws Exception {
-        insertLocationData();
-        insertDateTime();
+    public String format() {
+        try {
+            insertLocationData();
+        } catch (Exception ex) {
+            errors.add(ex);
+        }
+
+        try {
+            insertDateTime();
+        } catch (Exception ex) {
+            errors.add(ex);
+        }
+
         return value;
     }
 
-    private void insertLocationData() throws Exception {
+    private void insertLocationData() throws TagNotFoundException, GpsReverseLookupException {
         if (hasLocation()) {
             log.debug("location information needed");
             OSMRecord addr = getAddress();
@@ -64,13 +80,13 @@ public class FileFormatter {
         }
     }
 
-    private OSMRecord getAddress() throws Exception {
+    private OSMRecord getAddress() throws TagNotFoundException, GpsReverseLookupException {
         GpsRecord lat = MetadataUtil.getLatitude(tags);
         GpsRecord lon = MetadataUtil.getLongtitude(tags);
         return geoService.reverseLookup(lat, lon);
     }
 
-    private void insertDateTime() {
+    private void insertDateTime() throws TagNotFoundException {
         LocalDateTime date = MetadataUtil.getDateTime(tags);
         value = value.replace(YEAR_FOUR, formatDateTime("yyyy", date));
         value = value.replace(YEAR_TWO, formatDateTime("yy", date));

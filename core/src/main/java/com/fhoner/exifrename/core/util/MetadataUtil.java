@@ -3,6 +3,7 @@ package com.fhoner.exifrename.core.util;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
+import com.fhoner.exifrename.core.exception.TagNotFoundException;
 import com.fhoner.exifrename.core.model.GpsRecord;
 import lombok.NonNull;
 
@@ -61,8 +62,29 @@ public class MetadataUtil {
      * @param tags Exif metadata.
      * @return Extracted latitude.
      */
-    public static GpsRecord getLatitude(@NonNull Map<String, Tag> tags) {
-        String latStr = tags.get(TAG_GPS_LAT_REF).getDescription() + " " + tags.get(TAG_GPS_LAT).getDescription();
+    public static GpsRecord getLatitude(@NonNull Map<String, Tag> tags) throws TagNotFoundException {
+        Tag latRefTag = tags.get(TAG_GPS_LAT_REF);
+        Tag latTag = tags.get(TAG_GPS_LAT);
+        if (latRefTag == null || latTag == null) {
+            throw new TagNotFoundException("no gps latitude tag present");
+        }
+        String latStr = latRefTag.getDescription() + " " + latTag.getDescription();
+        return GpsRecord.parseString(latStr);
+    }
+
+    /**
+     * Extracts the longtitude as a {@link GpsRecord} from exif tags.
+     *
+     * @param tags Exif metadata.
+     * @return Extracted longtitude.
+     */
+    public static GpsRecord getLongtitude(@NonNull Map<String, Tag> tags) throws TagNotFoundException {
+        Tag lonRefTag = tags.get(TAG_GPS_LONG_REF);
+        Tag lonTag = tags.get(TAG_GPS_LONG);
+        if (lonRefTag == null || lonTag == null) {
+            throw new TagNotFoundException("no gps longtitude tag present");
+        }
+        String latStr = lonRefTag.getDescription() + " " + lonTag.getDescription();
         return GpsRecord.parseString(latStr);
     }
 
@@ -72,20 +94,13 @@ public class MetadataUtil {
      * @param tags Exif metadata.
      * @return Date and time of creation.
      */
-    public static LocalDateTime getDateTime(@NonNull Map<String, Tag> tags) {
+    public static LocalDateTime getDateTime(@NonNull Map<String, Tag> tags) throws TagNotFoundException {
+        Tag dateTimeTag = tags.get(TAGS_DATE_TIME);
+        if (dateTimeTag == null) {
+            throw new TagNotFoundException("no creation time present");
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
-        return LocalDateTime.parse(tags.get(TAGS_DATE_TIME).getDescription(), formatter);
-    }
-
-    /**
-     * Extracts the longtitude as a {@link GpsRecord} from exif tags.
-     *
-     * @param tags Exif metadata.
-     * @return Extracted longtitude.
-     */
-    public static GpsRecord getLongtitude(@NonNull Map<String, Tag> tags) {
-        String longStr = tags.get(TAG_GPS_LONG_REF).getDescription() + " " + tags.get(TAG_GPS_LONG).getDescription();
-        return GpsRecord.parseString(longStr);
+        return LocalDateTime.parse(dateTimeTag.getDescription(), formatter);
     }
 
     private static String getKey(Tag tag) {
