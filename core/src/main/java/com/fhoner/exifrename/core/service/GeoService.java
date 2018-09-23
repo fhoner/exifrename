@@ -45,12 +45,7 @@ public class GeoService {
             return cached;
         }
 
-        client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(getUrl(lat, lon));
-        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
-        log.debug("sending request to " + webTarget.getUri());
-        Response response = invocationBuilder.get();
-
+        Response response = makeHttpRequest(lat, lon);
         if (response.getStatusInfo().getFamily() == SUCCESSFUL) {
             OSMRecord result = response.readEntity(OSMRecord.class);
             cache.put(key, result);
@@ -59,6 +54,13 @@ public class GeoService {
         } else {
             throw new GpsReverseLookupException("gps reverse lookup failed");
         }
+    }
+
+    protected Response makeHttpRequest(GpsRecord lat, GpsRecord lon) {
+        WebTarget webTarget = client.target(getUrl(lat, lon));
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+        log.debug("sending request to " + webTarget.getUri());
+        return invocationBuilder.get();
     }
 
     private String getUrl(GpsRecord lat, GpsRecord lon) {

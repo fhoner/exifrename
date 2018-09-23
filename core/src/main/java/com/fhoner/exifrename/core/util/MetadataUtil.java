@@ -3,8 +3,11 @@ package com.fhoner.exifrename.core.util;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
+import com.fhoner.exifrename.core.exception.TagEmptyException;
 import com.fhoner.exifrename.core.exception.TagNotFoundException;
 import com.fhoner.exifrename.core.model.GpsRecord;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.time.LocalDateTime;
@@ -18,7 +21,8 @@ import java.util.stream.StreamSupport;
 /**
  * Provides some util methods.
  */
-public class MetadataUtil {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class MetadataUtil {
 
     public static final String TAG_GPS_LAT_REF = "GPS/GPS Latitude Ref";
     public static final String TAG_GPS_LAT = "GPS/GPS Latitude";
@@ -27,9 +31,6 @@ public class MetadataUtil {
     public static final String TAGS_DATE_TIME = "Exif SubIFD/Date/Time Digitized";
 
     private static final String DATE_TIME_FORMAT = "yyyy:MM:dd HH:mm:ss";
-
-    private MetadataUtil() {
-    }
 
     /**
      * Gets a map of the tags with directoryname/tagname as key.
@@ -62,11 +63,11 @@ public class MetadataUtil {
      * @param tags Exif metadata.
      * @return Extracted latitude.
      */
-    public static GpsRecord getLatitude(@NonNull Map<String, Tag> tags) throws TagNotFoundException {
+    public static GpsRecord getLatitude(@NonNull Map<String, Tag> tags) throws TagEmptyException {
         Tag latRefTag = tags.get(TAG_GPS_LAT_REF);
         Tag latTag = tags.get(TAG_GPS_LAT);
         if (latRefTag == null || latTag == null) {
-            throw new TagNotFoundException("no gps latitude tag present");
+            throw new TagEmptyException("no gps latitude tag present");
         }
         String latStr = latRefTag.getDescription() + " " + latTag.getDescription();
         return GpsRecord.parseString(latStr);
@@ -78,11 +79,11 @@ public class MetadataUtil {
      * @param tags Exif metadata.
      * @return Extracted longtitude.
      */
-    public static GpsRecord getLongtitude(@NonNull Map<String, Tag> tags) throws TagNotFoundException {
+    public static GpsRecord getLongtitude(@NonNull Map<String, Tag> tags) throws TagEmptyException {
         Tag lonRefTag = tags.get(TAG_GPS_LONG_REF);
         Tag lonTag = tags.get(TAG_GPS_LONG);
         if (lonRefTag == null || lonTag == null) {
-            throw new TagNotFoundException("no gps longtitude tag present");
+            throw new TagEmptyException("no gps longtitude tag present");
         }
         String latStr = lonRefTag.getDescription() + " " + lonTag.getDescription();
         return GpsRecord.parseString(latStr);

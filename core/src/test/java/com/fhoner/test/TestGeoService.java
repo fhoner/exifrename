@@ -3,6 +3,7 @@ package com.fhoner.test;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
+import com.fhoner.exifrename.core.exception.GpsReverseLookupException;
 import com.fhoner.exifrename.core.model.GpsRecord;
 import com.fhoner.exifrename.core.model.OSMRecord;
 import com.fhoner.exifrename.core.service.GeoService;
@@ -10,6 +11,7 @@ import com.fhoner.exifrename.core.util.MetadataUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.ws.rs.core.Response;
 import java.io.File;
 import java.util.Map;
 
@@ -49,7 +51,20 @@ public class TestGeoService {
 
     @Test
     public void shouldCorrectlyReverseLookup() throws Exception {
-        OSMRecord result = geoService.reverseLookup(lat, lon);
+        geoService.reverseLookup(lat, lon);
+    }
+
+    @Test(expected = GpsReverseLookupException.class)
+    public void shouldThrowOnHttpError() throws Exception {
+        GeoService mock = new GeoServiceMock();
+        mock.reverseLookup(lat, lon);
+    }
+
+    private class GeoServiceMock extends GeoService {
+        @Override
+        protected Response makeHttpRequest(GpsRecord lat, GpsRecord lon) {
+            return Response.serverError().build();
+        }
     }
 
 }

@@ -3,18 +3,20 @@ package com.fhoner.test;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
+import com.fhoner.exifrename.core.exception.TagEmptyException;
 import com.fhoner.exifrename.core.model.GpsRecord;
 import com.fhoner.exifrename.core.util.MetadataUtil;
 import org.junit.Test;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.util.Map;
 
 import static com.fhoner.exifrename.core.util.MetadataUtil.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 public class TestMetadataUtil {
 
@@ -37,6 +39,15 @@ public class TestMetadataUtil {
         GpsRecord lon = GpsRecord.parseString(longStr);
     }
 
+    @Test(expected = TagEmptyException.class)
+    public void shouldThrowOnLonNull() throws Exception {
+        File file = new File(getClass().getClassLoader().getResource(SAMPLE_IMAGE_NAME).getFile());
+        Metadata exif = ImageMetadataReader.readMetadata(file);
+        Map<String, Tag> tags = MetadataUtil.getTags(exif);
+        tags.forEach((s, t) -> tags.put(s, null));
+        MetadataUtil.getLongtitude(tags);
+    }
+
     @Test
     public void shouldCorrectlyCalculatePositive() {
         GpsRecord rec = GpsRecord.builder()
@@ -57,6 +68,14 @@ public class TestMetadataUtil {
                 .seconds(new BigDecimal(52.5))
                 .build();
         assertThat(MetadataUtil.convertGpsToDecimalDegree(rec), closeTo(-122.61458, 0.00001));
+    }
+
+    @Test
+    public void shouldHavePrivateConstructor() throws Exception {
+        Constructor<MetadataUtil> constructor = MetadataUtil.class.getDeclaredConstructor();
+        assertThat(Modifier.isPrivate(constructor.getModifiers()), is(true));
+        constructor.setAccessible(true);
+        constructor.newInstance();
     }
 
 }

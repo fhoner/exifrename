@@ -8,7 +8,6 @@ import com.fhoner.exifrename.core.model.GpsRecord;
 import com.fhoner.exifrename.core.model.OSMRecord;
 import com.fhoner.exifrename.core.service.GeoService;
 import com.fhoner.exifrename.core.util.FileFormatter;
-import com.fhoner.exifrename.core.util.FilenamePattern;
 import com.fhoner.exifrename.core.util.MetadataUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +25,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TestFormatting {
+public class TestFileFormatter {
 
     private static final String SAMPLE_IMAGE_NAME = "images/sample.JPG";
 
@@ -78,14 +77,30 @@ public class TestFormatting {
         assertThat(formatter.format(), is("Capbreton Felix 2018-Honer Dax New Aquitaine France"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowOnNullParameterFromString() {
-        FilenamePattern.fromString(null);
+    @Test
+    public void shouldReplaceGpsWhenUnknown() {
+        tags.clear();
+        FileFormatter formatter = new FileFormatter("%t Felix Honer %c %S %C", tags);
+        Whitebox.setInternalState(formatter, "tags", tags);
+        Whitebox.setInternalState(formatter, "geoService", geoServiceMock);
+        assertThat(formatter.format(), is("Felix Honer [No-GPS]"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowOnNullParameterOnFormat() throws Exception {
-        FilenamePattern.fromString("").formatFilename(null);
+    @Test
+    public void shouldReplaceDateWhenUnknown() {
+        tags.clear();
+        FileFormatter formatter = new FileFormatter("%y test", tags);
+        Whitebox.setInternalState(formatter, "tags", tags);
+        assertThat(formatter.format(), is("test [No-Date]"));
+    }
+
+    @Test
+    public void shouldPlaceUnknownHintAtCorrectPosition() {
+        tags.clear();
+        FileFormatter formatter = new FileFormatter("%y %t Felix Honer %c %S %C", tags);
+        Whitebox.setInternalState(formatter, "tags", tags);
+        Whitebox.setInternalState(formatter, "geoService", geoServiceMock);
+        assertThat(formatter.format(), is("Felix Honer [No-GPS] [No-Date]"));
     }
 
 }
