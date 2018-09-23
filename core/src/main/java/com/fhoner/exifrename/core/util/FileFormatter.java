@@ -23,13 +23,14 @@ import java.util.stream.Stream;
 public class FileFormatter {
 
     private static final String DATA_UNKNOWN_TEXT = "[unknown]";
+    private static final String NO_GPS_DATA_AVAILABLE = "[No-GPS]";
 
     private static final String TOWN = "%t";
     private static final String COUNTY = "%c";
     private static final String STATE = "%S";
     private static final String COUNTRY = "%C";
-    private static final String COUNTRY_CODE = "%d";
-    private static final List<String> LOCATION_DATA = Arrays.asList(new String[]{TOWN, COUNTY, STATE, COUNTRY});
+    private static final String COUNTRY_CODE = "%r";
+    private static final List<String> LOCATION_DATA = Arrays.asList(new String[]{TOWN, COUNTY, STATE, COUNTRY, COUNTRY_CODE});
 
     private static final String YEAR_FOUR = "%y";
     private static final String YEAR_TWO = "%Y";
@@ -60,17 +61,18 @@ public class FileFormatter {
     public String format() {
         try {
             insertLocationData();
-        } catch (Exception ex) {
+        } catch (TagNotFoundException | GpsReverseLookupException ex) {
+            removeLocationData();
             errors.add(ex);
         }
 
         try {
             insertDateTime();
         } catch (Exception ex) {
+            removeVariables();
             errors.add(ex);
         }
 
-        removeVariables();
         return value;
     }
 
@@ -132,6 +134,17 @@ public class FileFormatter {
     private String formatDateTime(String pattern, LocalDateTime instance) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return formatter.format(instance);
+    }
+
+    private void removeLocationData() {
+        boolean removed = false;
+        for (String s : LOCATION_DATA) {
+            removed = true;
+            this.value = this.value.replace(s, "");
+        }
+        if (removed) {
+            this.value += NO_GPS_DATA_AVAILABLE;
+        }
     }
 
 }

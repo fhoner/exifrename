@@ -49,8 +49,8 @@ public class GpsRecord {
         return GpsRecord.builder()
                 .ref(Ref.valueOf(split.get(0)))
                 .degrees(Integer.parseInt(split.get(1)))
-                .minutes(new BigDecimal(split.get(2)))
-                .seconds(new BigDecimal(split.get(3)))
+                .minutes(new BigDecimal(split.get(2).replace(",", ".")))
+                .seconds(new BigDecimal(split.get(3).replace(",", ".")))
                 .build();
     }
 

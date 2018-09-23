@@ -80,7 +80,7 @@ public class FileService extends Observable {
             (new File(destination)).mkdirs();
         }
 
-        log.info("starting creating files in " + destination);
+        log.info("starting creating files in " + destination + "using pattern '" + pattern.getPattern() + "'");
         for (File file : files) {
             Metadata exif = ImageMetadataReader.readMetadata(file);
             String s = file.getAbsolutePath();

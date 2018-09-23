@@ -50,4 +50,8 @@ public class Address {
         return null;
     }
 
+    public String getCountryCode() {
+        return countryCode == null ? null : countryCode.toUpperCase();
+    }
+
 }

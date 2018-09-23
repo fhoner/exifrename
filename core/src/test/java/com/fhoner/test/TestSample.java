@@ -19,7 +19,7 @@ public class TestSample {
     public void sample() {
         String source = "/home/fhoner/Desktop/source";
         String dest = "/home/fhoner/Desktop/dest";
-        FilenamePattern pattern = FilenamePattern.fromString("%y-%m-%d - Motorradtour - %S, %c %C");
+        FilenamePattern pattern = FilenamePattern.fromString("%y-%m-%d-%h-%M-%s Motorrad %r %t");
 
         try {
             FileService service = new FileService();

@@ -149,7 +149,7 @@
                                 <Insets bottom="2.0" right="4.0" top="2.0" />
                             </HBox.margin>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="country code (%d)">
+                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="country code (%r)">
                             <HBox.margin>
                                 <Insets bottom="2.0" right="4.0" top="2.0" />
                             </HBox.margin>
