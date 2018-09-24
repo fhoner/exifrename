@@ -32,14 +32,18 @@ public class Address {
     private String countryCode;
 
     public String getVillage() {
-        return getTownOrVillage();
+        return getTownCityVillage();
+    }
+
+    public String getCity() {
+        return getTownCityVillage();
     }
 
     public String getTown() {
-        return getTownOrVillage();
+        return getTownCityVillage();
     }
 
-    private String getTownOrVillage() {
+    private String getTownCityVillage() {
         if (village != null && !String.valueOf(village).isEmpty()) {
             return village;
         } else if (city != null && !String.valueOf(city).isEmpty()) {

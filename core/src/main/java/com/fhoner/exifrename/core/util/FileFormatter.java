@@ -68,17 +68,17 @@ public class FileFormatter {
         try {
             insertLocationData();
         } catch (TagEmptyException | GpsReverseLookupException ex) {
-            replaceVariables(LOCATION_DATA, UNKNOWN_GPS);
             errors.add(ex);
         }
 
         try {
             insertDateTime();
         } catch (TagNotFoundException ex) {
-            replaceVariables(DATETIME_DATA, UNKNOWN_DATETIME);
             errors.add(ex);
         }
 
+        replaceVariables(LOCATION_DATA, UNKNOWN_GPS);
+        replaceVariables(DATETIME_DATA, UNKNOWN_DATETIME);
         postFormat();
         return value;
     }

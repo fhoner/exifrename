@@ -45,7 +45,7 @@ public class FilenamePattern {
         FileFormatter formatter = new FileFormatter(this.pattern, tags);
         String formatted = formatter.format();
         this.errors.addAll(formatter.getErrors());
-        return formatted;
+        return formatted.replace("/", "-");
     }
 
 }
