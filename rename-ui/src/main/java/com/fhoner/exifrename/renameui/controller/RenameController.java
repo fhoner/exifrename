@@ -24,14 +24,21 @@ import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Log4j
 public class RenameController implements Initializable, Observer {
 
-    private static final String REGEX = ".* \\((\\%.)\\)";
-    private static final Pattern PATTERN = Pattern.compile(REGEX);
+    private static final String VARIABLES_REGEX = ".* \\((\\%.)\\)";
+    private static final Pattern VARIABLES_PATTERN = Pattern.compile(VARIABLES_REGEX);
+
+    private static final String PREF_SOURCE = "source";
+    private static final String PREF_DESTINATION = "destination";
+    private static final String PREF_PATTERN = "pattern";
+
+    private static final String DEFAULT_PATTERN = "%y-%m-%d-%h-%M-%s My Tour %r-%t";
 
     @FXML
     private TextField txtSource;
@@ -53,11 +60,13 @@ public class RenameController implements Initializable, Observer {
 
     private SimpleBooleanProperty isRunningProp = new SimpleBooleanProperty();
     private File lastSelectedFolder = new File(System.getProperty("user.home"));
+    private Preferences userPrefs = Preferences.userNodeForPackage(RenameController.class);
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         showVersion();
         addButtonDisabledBinding();
+        loadPreferences();
     }
 
     @FXML
@@ -91,7 +100,7 @@ public class RenameController implements Initializable, Observer {
     @FXML
     private void insertVariable(ActionEvent event) {
         Button sourceBtn = (Button) event.getSource();
-        Matcher matcher = PATTERN.matcher(sourceBtn.getText());
+        Matcher matcher = VARIABLES_PATTERN.matcher(sourceBtn.getText());
         while (matcher.find()) {
             String var = matcher.group(1);
             log.debug("inserting variable " + var);
@@ -104,6 +113,9 @@ public class RenameController implements Initializable, Observer {
     @FXML
     private void makeFiles(ActionEvent event) {
         RenameController ref = this;
+        userPrefs.put(PREF_SOURCE, txtSource.getText());
+        userPrefs.put(PREF_DESTINATION, txtDestination.getText());
+        userPrefs.put(PREF_PATTERN, txtPattern.getText());
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -151,13 +163,6 @@ public class RenameController implements Initializable, Observer {
         btnMakeFiles.disableProperty().bind(bb);
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        FileServiceUpdate update = (FileServiceUpdate) arg;
-        Platform.runLater(() -> lblProgress.setText("Progress: " + update.getFilesDone() + "/" + update.getFilesCount()));
-        log.debug("fileservice update: " + update.getFilesDone() + "/" + update.getFilesCount());
-    }
-
     private void showVersion() {
         try {
             GitRevisionUtil git = new GitRevisionUtil();
@@ -166,6 +171,19 @@ public class RenameController implements Initializable, Observer {
         } catch (IOException ex) {
             lblVersion.setText("version unavailable");
         }
+    }
+
+    private void loadPreferences() {
+        txtSource.setText(userPrefs.get(PREF_SOURCE, ""));
+        txtDestination.setText(userPrefs.get(PREF_DESTINATION, ""));
+        txtPattern.setText(userPrefs.get(PREF_PATTERN, DEFAULT_PATTERN));
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        FileServiceUpdate update = (FileServiceUpdate) arg;
+        Platform.runLater(() -> lblProgress.setText("Progress: " + update.getFilesDone() + "/" + update.getFilesCount()));
+        log.debug("fileservice update: " + update.getFilesDone() + "/" + update.getFilesCount());
     }
 
 }
