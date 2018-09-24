@@ -21,6 +21,7 @@ import lombok.extern.log4j.Log4j;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
@@ -37,7 +38,7 @@ public class RenameController implements Initializable, Observer {
     private static final String PREF_SOURCE = "source";
     private static final String PREF_DESTINATION = "destination";
     private static final String PREF_PATTERN = "pattern";
-    private static final String DEFAULT_PATTERN = "%y-%m-%d-%h-%M-%s My Tour %r-%t";
+    private static final String DEFAULT_PATTERN = "%y-%m-%d-%h-%M-%s {0} %r-%t";
     private static final String DESTINATION_APPENDING = "/renamed";
 
     @FXML
@@ -62,8 +63,12 @@ public class RenameController implements Initializable, Observer {
     private File lastSelectedFolder = new File(System.getProperty("user.home"));
     private Preferences userPrefs = Preferences.userNodeForPackage(RenameController.class);
 
+    @FXML
+    public ResourceBundle bundle;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.bundle = resources;
         showVersion();
         addButtonDisabledBinding();
         loadPreferences();
@@ -130,13 +135,16 @@ public class RenameController implements Initializable, Observer {
                     FilenamePattern pattern = FilenamePattern.fromString(txtPattern.getText());
                     fs.createFiles(pattern, txtDestination.getText());
                     Platform.runLater(() -> DialogUtil.showInfoDialog(
-                            "Done",
-                            "Success",
-                            fs.getFiles().size() + " images have been copied to destination folder.",
+                            bundle.getString("done"),
+                            bundle.getString("success"),
+                            MessageFormat.format(bundle.getString("imagesCopiedDialog"), fs.getFiles().size()),
                             null));
                 } catch (Exception ex) {
                     log.error("could not finish", ex);
-                    Platform.runLater(() -> DialogUtil.showErrorDialog("Error", "Error", "An error occurred:" + ex.getMessage(), null));
+                    Platform.runLater(() -> DialogUtil.showErrorDialog(
+                            bundle.getString("error"),
+                            bundle.getString("error"),
+                            bundle.getString("couldNotFinish"), null));
                 } finally {
                     isRunningProp.set(false);
                 }
@@ -179,7 +187,7 @@ public class RenameController implements Initializable, Observer {
     private void loadPreferences() {
         txtSource.setText(userPrefs.get(PREF_SOURCE, ""));
         txtDestination.setText(userPrefs.get(PREF_DESTINATION, ""));
-        txtPattern.setText(userPrefs.get(PREF_PATTERN, DEFAULT_PATTERN));
+        txtPattern.setText(userPrefs.get(PREF_PATTERN, MessageFormat.format(DEFAULT_PATTERN, bundle.getString("myTour"))));
     }
 
     @Override

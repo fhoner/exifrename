@@ -19,7 +19,7 @@
             <children>
                 <HBox>
                     <children>
-                        <Label prefHeight="19.0" prefWidth="161.0" text="Source directory:">
+                        <Label prefHeight="19.0" prefWidth="161.0" text="%sourceDir">
                             <padding>
                                 <Insets top="3.0" />
                             </padding>
@@ -41,7 +41,7 @@
                 </HBox>
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>
-                        <Label prefHeight="19.0" prefWidth="161.0" text="Destination directory:">
+                        <Label prefHeight="19.0" prefWidth="161.0" text="%destinationDir">
                             <padding>
                                 <Insets top="3.0" />
                             </padding>
@@ -60,7 +60,7 @@
                 </HBox>
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>
-                        <Label prefHeight="19.0" prefWidth="161.0" text="Text pattern:">
+                        <Label prefHeight="19.0" prefWidth="161.0" text="%pattern">
                             <padding>
                                 <Insets top="3.0" />
                             </padding>
@@ -78,12 +78,12 @@
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>
                         <Pane prefHeight="26.0" prefWidth="161.0" />
-                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="year (%y)">
+                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="%year">
                             <HBox.margin>
                                 <Insets bottom="2.0" right="4.0" top="2.0" />
                             </HBox.margin>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="town (%t)">
+                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="%town">
                             <HBox.margin>
                                 <Insets bottom="2.0" right="4.0" top="2.0" />
                             </HBox.margin>
@@ -96,12 +96,12 @@
                 <HBox prefWidth="200.0">
                     <children>
                         <Pane prefWidth="161.0" />
-                        <Button mnemonicParsing="false" onAction="#insertVariable" prefWidth="150.0" text="month (%m)">
+                        <Button mnemonicParsing="false" onAction="#insertVariable" prefWidth="150.0" text="%month">
                             <HBox.margin>
                                 <Insets bottom="2.0" right="4.0" top="2.0" />
                             </HBox.margin>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#insertVariable" prefWidth="150.0" text="county (%c)">
+                        <Button mnemonicParsing="false" onAction="#insertVariable" prefWidth="150.0" text="%county">
                             <HBox.margin>
                                 <Insets bottom="2.0" right="4.0" top="2.0" />
                             </HBox.margin>
@@ -111,12 +111,12 @@
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>
                         <Pane prefHeight="26.0" prefWidth="161.0" />
-                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="day (%d)">
+                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="%day">
                             <HBox.margin>
                                 <Insets bottom="2.0" right="4.0" top="2.0" />
                             </HBox.margin>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="state (%s)">
+                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="%state">
                             <HBox.margin>
                                 <Insets bottom="2.0" right="4.0" top="2.0" />
                             </HBox.margin>
@@ -129,27 +129,12 @@
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>
                         <Pane prefHeight="26.0" prefWidth="161.0" />
-                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="hour (%h)">
+                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="%hour">
                             <HBox.margin>
                                 <Insets bottom="2.0" right="4.0" top="2.0" />
                             </HBox.margin>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="country (%C)">
-                            <HBox.margin>
-                                <Insets bottom="2.0" right="4.0" top="2.0" />
-                            </HBox.margin>
-                        </Button>
-                    </children>
-                </HBox>
-                <HBox prefHeight="100.0" prefWidth="200.0">
-                    <children>
-                        <Pane prefHeight="26.0" prefWidth="161.0" />
-                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="minute (%M)">
-                            <HBox.margin>
-                                <Insets bottom="2.0" right="4.0" top="2.0" />
-                            </HBox.margin>
-                        </Button>
-                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="country code (%r)">
+                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="%country">
                             <HBox.margin>
                                 <Insets bottom="2.0" right="4.0" top="2.0" />
                             </HBox.margin>
@@ -159,7 +144,22 @@
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>
                         <Pane prefHeight="26.0" prefWidth="161.0" />
-                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="second (%s)">
+                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="%minute">
+                            <HBox.margin>
+                                <Insets bottom="2.0" right="4.0" top="2.0" />
+                            </HBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="%countryCode">
+                            <HBox.margin>
+                                <Insets bottom="2.0" right="4.0" top="2.0" />
+                            </HBox.margin>
+                        </Button>
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Pane prefHeight="26.0" prefWidth="161.0" />
+                        <Button mnemonicParsing="false" onAction="#insertVariable" prefHeight="26.0" prefWidth="150.0" text="%second">
                             <HBox.margin>
                                 <Insets bottom="2.0" right="4.0" top="2.0" />
                             </HBox.margin>
@@ -180,15 +180,23 @@
                      </font>
                   </Label>
                         <Pane HBox.hgrow="ALWAYS" />
-                        <Label fx:id="lblProgress" text="Progress: 0/0">
+                        <Label text="%progress">
                             <padding>
                                 <Insets top="3.0" />
                             </padding>
                             <HBox.margin>
-                                <Insets right="20.0" top="3.0" />
+                                <Insets right="5.0" top="3.0" />
                             </HBox.margin>
                         </Label>
-                        <Button fx:id="btnMakeFiles" mnemonicParsing="false" onAction="#makeFiles" prefHeight="26.0" prefWidth="101.0" text="Go!">
+                  <Label fx:id="lblProgress" text="0/0">
+                     <padding>
+                        <Insets top="3.0" />
+                     </padding>
+                     <HBox.margin>
+                        <Insets right="20.0" top="3.0" />
+                     </HBox.margin>
+                  </Label>
+                        <Button fx:id="btnMakeFiles" mnemonicParsing="false" onAction="#makeFiles" prefHeight="26.0" prefWidth="101.0" text="%go">
                             <HBox.margin>
                                 <Insets bottom="2.0" right="4.0" top="2.0" />
                             </HBox.margin>

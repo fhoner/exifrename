@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class ViewApp extends Application {
 
@@ -23,9 +25,14 @@ public class ViewApp extends Application {
     private static Scene initMainScene() throws IOException {
         FXMLLoader.setDefaultClassLoader(ViewApp.class.getClassLoader());
         FXMLLoader fxmlLoader = new FXMLLoader(ViewApp.class.getResource("/fxml/RenameView.fxml"));
+        fxmlLoader.setResources(getLanguage());
         mainPanel = fxmlLoader.load();
         mainScene = new Scene(mainPanel);
         return mainScene;
+    }
+
+    private static ResourceBundle getLanguage() {
+        return ResourceBundle.getBundle("lang.language_de", Locale.ENGLISH);
     }
 
 }
