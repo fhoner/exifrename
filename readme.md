@@ -1,4 +1,4 @@
-# Rename by EXIF
+# Rename by EXIF [![Build Status](https://travis-ci.org/fhoner/exifrename.svg?branch=master)](https://travis-ci.org/fhoner/exifrename)
 Rename your photos based on tagged JPEG files by defining your own filename pattern.
 * translate gps coordinates to address information
 * datetime of creation
