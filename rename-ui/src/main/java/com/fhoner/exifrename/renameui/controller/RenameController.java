@@ -37,8 +37,8 @@ public class RenameController implements Initializable, Observer {
     private static final String PREF_SOURCE = "source";
     private static final String PREF_DESTINATION = "destination";
     private static final String PREF_PATTERN = "pattern";
-
     private static final String DEFAULT_PATTERN = "%y-%m-%d-%h-%M-%s My Tour %r-%t";
+    private static final String DESTINATION_APPENDING = "/renamed";
 
     @FXML
     private TextField txtSource;
@@ -80,6 +80,9 @@ public class RenameController implements Initializable, Observer {
         if (selectedDirectory != null) {
             lastSelectedFolder = selectedDirectory;
             txtSource.setText(selectedDirectory.getAbsolutePath());
+        }
+        if (txtDestination.getText().length() < 1) {
+            txtDestination.setText(lastSelectedFolder.getAbsolutePath() + DESTINATION_APPENDING);
         }
     }
 
