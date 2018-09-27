@@ -86,6 +86,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/model/*</exclude>
+                        <exclude>**/XmpParser.class</exclude>
                     </excludes>
                 </configuration>
                 <executions>
