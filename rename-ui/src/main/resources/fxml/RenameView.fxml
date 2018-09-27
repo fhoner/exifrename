@@ -180,22 +180,6 @@
                      </font>
                   </Label>
                         <Pane HBox.hgrow="ALWAYS" />
-                        <Label text="%progress">
-                            <padding>
-                                <Insets top="3.0" />
-                            </padding>
-                            <HBox.margin>
-                                <Insets right="5.0" top="3.0" />
-                            </HBox.margin>
-                        </Label>
-                  <Label fx:id="lblProgress" text="0/0">
-                     <padding>
-                        <Insets top="3.0" />
-                     </padding>
-                     <HBox.margin>
-                        <Insets right="20.0" top="3.0" />
-                     </HBox.margin>
-                  </Label>
                         <Button fx:id="btnMakeFiles" mnemonicParsing="false" onAction="#makeFiles" prefHeight="26.0" prefWidth="101.0" text="%go">
                             <HBox.margin>
                                 <Insets bottom="2.0" right="4.0" top="2.0" />

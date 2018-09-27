@@ -54,7 +54,8 @@ public class TestSamples {
     }
 
     @Test
-    public void asd() throws Exception {
+    @Ignore
+    public void sampleTagging() throws Exception {
         FileInputStream fin = new FileInputStream("/home/fhoner/Desktop/after.jpg");
         XMPMeta meta = XmpParser.extractXMPMeta(fin);
         fin.close();

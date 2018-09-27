@@ -19,6 +19,7 @@ public class ViewApp extends Application {
     public void start(Stage primaryStage) throws Exception {
         Scene scene = initMainScene();
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 

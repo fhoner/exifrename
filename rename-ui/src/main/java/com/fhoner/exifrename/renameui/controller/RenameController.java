@@ -1,36 +1,33 @@
 package com.fhoner.exifrename.renameui.controller;
 
-import com.fhoner.exifrename.core.model.FileServiceUpdate;
-import com.fhoner.exifrename.core.service.FileService;
-import com.fhoner.exifrename.core.util.FilenamePattern;
-import com.fhoner.exifrename.renameui.util.DialogUtil;
 import com.fhoner.exifrename.renameui.util.GitRevisionUtil;
-import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import lombok.extern.log4j.Log4j;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Log4j
-public class RenameController implements Initializable, Observer {
+public class RenameController implements Initializable {
 
     private static final String VARIABLES_REGEX = ".* \\((\\%.)\\)";
     private static final Pattern VARIABLES_PATTERN = Pattern.compile(VARIABLES_REGEX);
@@ -53,12 +50,8 @@ public class RenameController implements Initializable, Observer {
     private Button btnMakeFiles;
 
     @FXML
-    private Label lblProgress;
-
-    @FXML
     private Label lblVersion;
 
-    private SimpleBooleanProperty isRunningProp = new SimpleBooleanProperty();
     private File lastSelectedFolder = new File(System.getProperty("user.home"));
     private Preferences userPrefs = Preferences.userNodeForPackage(RenameController.class);
 
@@ -121,33 +114,26 @@ public class RenameController implements Initializable, Observer {
         userPrefs.put(PREF_SOURCE, txtSource.getText());
         userPrefs.put(PREF_DESTINATION, txtDestination.getText());
         userPrefs.put(PREF_PATTERN, txtPattern.getText());
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    isRunningProp.set(true);
-                    FileService fs = new FileService();
-                    fs.addObserver(ref);
-                    fs.addFiles(txtSource.getText());
-                    FilenamePattern pattern = FilenamePattern.fromString(txtPattern.getText());
-                    fs.formatFiles(pattern, txtDestination.getText());
-                    Platform.runLater(() -> DialogUtil.showInfoDialog(
-                            bundle.getString("done"),
-                            bundle.getString("success"),
-                            MessageFormat.format(bundle.getString("imagesCopiedDialog"), fs.getFiles().size()),
-                            null));
-                } catch (Exception ex) {
-                    log.error("could not finish", ex);
-                    Platform.runLater(() -> DialogUtil.showErrorDialog(
-                            bundle.getString("error"),
-                            bundle.getString("error"),
-                            bundle.getString("couldNotFinish"), null));
-                } finally {
-                    isRunningProp.set(false);
-                }
-            }
-        });
-        t.start();
+
+        Parent root;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProgressView.fxml"), bundle);
+            root = loader.load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(btnMakeFiles.getScene().getWindow());
+            stage.initStyle(StageStyle.UNDECORATED);
+            stage.setTitle("My New Stage Title");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.show();
+
+            ProgressController controller = (ProgressController) loader.getController();
+            controller.init(txtPattern.getText(), txtSource.getText(), txtDestination.getText());
+            controller.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void addButtonDisabledBinding() {
@@ -155,16 +141,14 @@ public class RenameController implements Initializable, Observer {
             {
                 super.bind(txtSource.textProperty(),
                         txtDestination.textProperty(),
-                        txtPattern.textProperty(),
-                        isRunningProp);
+                        txtPattern.textProperty());
             }
 
             @Override
             protected boolean computeValue() {
                 return (txtSource.getText().isEmpty()
                         || txtDestination.getText().isEmpty()
-                        || txtPattern.getText().isEmpty()
-                        || isRunningProp.getValue());
+                        || txtPattern.getText().isEmpty());
             }
         };
 
@@ -185,13 +169,6 @@ public class RenameController implements Initializable, Observer {
         txtSource.setText(userPrefs.get(PREF_SOURCE, ""));
         txtDestination.setText(userPrefs.get(PREF_DESTINATION, ""));
         txtPattern.setText(userPrefs.get(PREF_PATTERN, MessageFormat.format(DEFAULT_PATTERN, bundle.getString("myTour"))));
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        FileServiceUpdate update = (FileServiceUpdate) arg;
-        Platform.runLater(() -> lblProgress.setText("Progress: " + update.getFilesDone() + "/" + update.getFilesCount()));
-        log.debug("fileservice update: " + update.getFilesDone() + "/" + update.getFilesCount());
     }
 
 }
