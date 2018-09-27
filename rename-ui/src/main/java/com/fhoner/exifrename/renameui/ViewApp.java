@@ -32,7 +32,9 @@ public class ViewApp extends Application {
     }
 
     private static ResourceBundle getLanguage() {
-        return ResourceBundle.getBundle("lang.language_de", Locale.ENGLISH);
+        if (Locale.getDefault() == Locale.GERMAN)
+            return ResourceBundle.getBundle("lang.language_de");
+        return ResourceBundle.getBundle("lang.language_en");
     }
 
 }
