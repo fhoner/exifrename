@@ -16,8 +16,7 @@ import java.io.File;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 public class TestGeoService {
 
@@ -34,7 +33,7 @@ public class TestGeoService {
 
     @Before
     public void init() throws Exception {
-        geoService = new GeoService();
+        geoService = GeoService.getInstance();
 
         File file = new File(getClass().getClassLoader().getResource(SAMPLE_IMAGE_NAME).getFile());
         Metadata exif = ImageMetadataReader.readMetadata(file);
@@ -52,6 +51,18 @@ public class TestGeoService {
     @Test
     public void shouldCorrectlyReverseLookup() throws Exception {
         geoService.reverseLookup(lat, lon);
+    }
+
+    @Test
+    public void shouldWaitBetweenCalls() throws Exception {
+        long first = System.currentTimeMillis();
+        geoService.clearCache();
+        geoService.reverseLookup(lat, lon);
+        geoService.clearCache();
+        geoService.reverseLookup(lat, lon);
+        long second = System.currentTimeMillis();
+        long diff = second - first;
+        assertThat(diff, greaterThan(1000L));
     }
 
     @Test(expected = GpsReverseLookupException.class)

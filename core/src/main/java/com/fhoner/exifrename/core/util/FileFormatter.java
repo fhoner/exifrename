@@ -47,7 +47,7 @@ public class FileFormatter {
     private static final String SECOND = "%s";
     private static final List<String> DATETIME_DATA = Arrays.asList(new String[]{YEAR_FOUR, YEAR_TWO, MONTH, DAY, HOUR, MINUTE, SECOND});
 
-    private static GeoService geoService = new GeoService();
+    private static GeoService geoService = GeoService.getInstance();
 
     private Map<String, Tag> tags;
     private String value;

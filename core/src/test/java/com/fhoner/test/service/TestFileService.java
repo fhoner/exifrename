@@ -65,10 +65,6 @@ public class TestFileService {
         assertThat(newFile, anExistingFile());
     }
 
-    @Test
-    public void shouldThrowOnNetworkError() {
-    }
-
     @Test(expected = FileNotFoundException.class)
     public void shouldThrowWhenFileNotExists() throws Exception {
         fileService.addFiles("/wont/exist/ever/i/guess");
