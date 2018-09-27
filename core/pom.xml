@@ -118,7 +118,7 @@
                 <version>2.15</version>
                 <configuration>
                     <argLine>${surefireArgLine}</argLine>
-                    <skipTests>${skip.unit.tests}</skipTests>
+                    <skipTests>${skipTests}</skipTests>
                     <excludes>
                         <exclude>**/IT*.java</exclude>
                     </excludes>
