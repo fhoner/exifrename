@@ -10,11 +10,14 @@ import com.icafe4j.image.meta.xmp.XMP;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -53,6 +56,15 @@ public class ImageMetaTagger {
         Metadata.insertIPTC(fin, fout, iptc);
         fin.close();
         fout.close();
+
+        Files.delete(Paths.get(tempDest));
+    }
+
+    public ImageMetaTagger setPropertyNullSafe(@NonNull String ns, @NonNull String property, String value) throws XMPException {
+        if (value != null) {
+            xmp.setProperty(ns, property, value);
+        }
+        return this;
     }
 
     public XMPMeta getXmp() {

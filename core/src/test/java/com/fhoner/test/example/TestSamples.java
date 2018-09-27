@@ -37,7 +37,7 @@ public class TestSamples {
         try {
             FileService service = new FileService();
             service.addFiles(source);
-            service.createFiles(pattern, dest);
+            service.formatFiles(pattern, dest);
             service.getErrors().forEach((k, arr) -> {
                 for (Exception ex : arr) {
                     System.out.print(k);

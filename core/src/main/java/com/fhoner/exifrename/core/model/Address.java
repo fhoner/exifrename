@@ -22,7 +22,9 @@ public class Address {
     private String village;
     private String town;
     private String city;
-    private String city_district;
+
+    @XmlElement(name = "city_district")
+    private String cityDistrict;
     private String county;
     private String state;
     private String country;

@@ -5,8 +5,8 @@ import com.fhoner.exifrename.core.exception.GpsReverseLookupException;
 import com.fhoner.exifrename.core.exception.TagEmptyException;
 import com.fhoner.exifrename.core.exception.TagNotFoundException;
 import com.fhoner.exifrename.core.model.Address;
-import com.fhoner.exifrename.core.model.GpsRecord;
 import com.fhoner.exifrename.core.model.OSMRecord;
+import com.fhoner.exifrename.core.service.AddressService;
 import com.fhoner.exifrename.core.service.GeoService;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -49,6 +49,7 @@ public class FileFormatter {
 
     private static GeoService geoService = GeoService.getInstance();
 
+    private AddressService addressService;
     private Map<String, Tag> tags;
     private String value;
     private List<Exception> errors = new ArrayList<>();
@@ -56,6 +57,7 @@ public class FileFormatter {
     public FileFormatter(String value, Map<String, Tag> tags) {
         this.value = value;
         this.tags = tags;
+        this.addressService = new AddressService(tags);
     }
 
     /**
@@ -86,7 +88,7 @@ public class FileFormatter {
     private void insertLocationData() throws TagEmptyException, GpsReverseLookupException {
         if (hasLocation()) {
             log.debug("location information needed");
-            OSMRecord osmrec = getAddress();
+            OSMRecord osmrec = addressService.getAddress();
             Address address = osmrec.getAddress();
             String v = address.getVillage();
             insertValueNullsafe(TOWN, address.getVillage());
@@ -105,12 +107,6 @@ public class FileFormatter {
         } else {
             log.info("information not available for " + variable);
         }
-    }
-
-    private OSMRecord getAddress() throws TagEmptyException, GpsReverseLookupException {
-        GpsRecord lat = MetadataUtil.getLatitude(tags);
-        GpsRecord lon = MetadataUtil.getLongtitude(tags);
-        return geoService.reverseLookup(lat, lon);
     }
 
     private void insertDateTime() throws TagNotFoundException {

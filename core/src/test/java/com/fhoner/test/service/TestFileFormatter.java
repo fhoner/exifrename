@@ -66,7 +66,7 @@ public class TestFileFormatter {
         FileFormatter formatter = new FileFormatter("%t %c %S %C", tags);
         Whitebox.setInternalState(formatter, "tags", tags);
         Whitebox.setInternalState(formatter, "geoService", geoServiceMock);
-        assertThat(formatter.format(), is("Capbreton Dax New Aquitaine France"));
+        assertThat(formatter.format(), is("Capbreton Dax Nouvelle-Aquitaine France"));
     }
 
     @Test
@@ -74,7 +74,7 @@ public class TestFileFormatter {
         FileFormatter formatter = new FileFormatter("%t Felix %y-Honer %c %S %C", tags);
         Whitebox.setInternalState(formatter, "tags", tags);
         Whitebox.setInternalState(formatter, "geoService", geoServiceMock);
-        assertThat(formatter.format(), is("Capbreton Felix 2018-Honer Dax New Aquitaine France"));
+        assertThat(formatter.format(), is("Capbreton Felix 2018-Honer Dax Nouvelle-Aquitaine France"));
     }
 
     @Test

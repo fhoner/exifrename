@@ -1,10 +1,18 @@
 package com.fhoner.exifrename.core.service;
 
+import com.adobe.xmp.XMPConst;
+import com.adobe.xmp.XMPException;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
+import com.fhoner.exifrename.core.exception.GpsReverseLookupException;
+import com.fhoner.exifrename.core.exception.TagEmptyException;
 import com.fhoner.exifrename.core.model.FileServiceUpdate;
+import com.fhoner.exifrename.core.model.OSMRecord;
+import com.fhoner.exifrename.core.tagging.ImageMetaTagger;
+import com.fhoner.exifrename.core.tagging.IptcTagSet;
 import com.fhoner.exifrename.core.util.FilenamePattern;
+import com.fhoner.exifrename.core.util.MetadataUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j;
@@ -26,6 +34,7 @@ import java.util.*;
 @Getter
 public class FileService extends Observable {
 
+    private static final String COPYRIGHT = "exifrename by Felix Honer";
     private static final Set<String> FILE_EXTENSION_WHITELIST;
 
     static {
@@ -71,7 +80,7 @@ public class FileService extends Observable {
      * @param destination Destination directory where files will be stored.
      * @throws Exception Thrown on several errors (tbd).
      */
-    public void createFiles(@NonNull FilenamePattern pattern, @NonNull String destination) throws IOException, ImageProcessingException {
+    public void formatFiles(@NonNull FilenamePattern pattern, @NonNull String destination) throws IOException, ImageProcessingException {
         if (destination.charAt(destination.length() - 1) != '/') {
             destination = destination + "/";
         }
@@ -89,8 +98,43 @@ public class FileService extends Observable {
             log.info("moving " + source + " to " + destinationPath);
             Files.copy(source, destinationPath);
             sendUpdate(new FileServiceUpdate(files.size(), files.indexOf(file) + 1));
+
+            writeTags(destinationPath, exif);
         }
         log.info("done. created " + files.size() + " files");
+    }
+
+    private void writeTags(Path path, Metadata exif) throws IOException {
+        File file = new File(path.toUri());
+        AddressService svc = new AddressService(MetadataUtil.getTags(exif));
+        ImageMetaTagger tagger = ImageMetaTagger.fromFile(file);
+        try {
+            OSMRecord maps = svc.getAddress();
+            IptcTagSet allIptcTags = IptcTagSet.builder()
+                    .copyrightNotice(COPYRIGHT)
+                    .locationName(maps.getAddress().getCity())
+                    .city(maps.getAddress().getCity())
+                    .provinceState(maps.getAddress().getState())
+                    .countryCode(maps.getAddress().getCountryCode())
+                    .countryName(maps.getAddress().getCountry())
+                    .build();
+            tagger.getIptc().addAll(allIptcTags.collect());
+
+            tagger.getXmp().deleteProperty(XMPConst.NS_DC, "subject");
+            tagger.setPropertyNullSafe(XMPConst.NS_IPTCCORE, "CountryCode", maps.getAddress().getCountryCode())
+                    .setPropertyNullSafe(XMPConst.NS_IPTCCORE, "Location", maps.getAddress().getCity())
+                    .setPropertyNullSafe(XMPConst.NS_PHOTOSHOP, "City", maps.getAddress().getCity())
+                    .setPropertyNullSafe(XMPConst.NS_PHOTOSHOP, "Country", maps.getAddress().getCountry())
+                    .setPropertyNullSafe(XMPConst.NS_PHOTOSHOP, "State", maps.getAddress().getState());
+
+            tagger.writeFile(file);
+        } catch (TagEmptyException ex) {
+            log.info("skip writing tags as no location metadata available");
+        } catch (GpsReverseLookupException ex) {
+            log.error("skip writing tags as reverse lookup failed", ex);
+        } catch (XMPException ex) {
+            log.error("error writing xmp property", ex);
+        }
     }
 
     private void sendUpdate(FileServiceUpdate update) {

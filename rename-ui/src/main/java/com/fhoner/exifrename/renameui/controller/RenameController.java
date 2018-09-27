@@ -133,7 +133,7 @@ public class RenameController implements Initializable, Observer {
                     fs.addObserver(ref);
                     fs.addFiles(txtSource.getText());
                     FilenamePattern pattern = FilenamePattern.fromString(txtPattern.getText());
-                    fs.createFiles(pattern, txtDestination.getText());
+                    fs.formatFiles(pattern, txtDestination.getText());
                     Platform.runLater(() -> DialogUtil.showInfoDialog(
                             bundle.getString("done"),
                             bundle.getString("success"),
