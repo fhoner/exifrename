@@ -111,6 +111,11 @@ public class FileService extends Observable {
      * @throws Exception Thrown on several errors (tbd).
      */
     public void formatFiles(@NonNull FilenamePattern pattern, @NonNull String destination) throws IOException, ImageProcessingException {
+        if (files.size() < 1) {
+            sendUpdate(new FileServiceUpdate(Reason.PROGRESS, 0, 0));
+            return;
+        }
+
         if (destination.charAt(destination.length() - 1) != '/') {
             destination = destination + "/";
         }

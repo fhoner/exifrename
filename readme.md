@@ -1,5 +1,5 @@
 # Rename by EXIF [![Build Status](https://travis-ci.org/fhoner/exifrename.svg?branch=master)](https://travis-ci.org/fhoner/exifrename)
-Rename your photos based on tagged JPEG files by defining your own filename pattern.
+Rename and tag your JPEG files by defining your own filename pattern.
 * renames your files as you defined the naming schema
 * translate gps coordinates to address information
 * writes IPTC and XMP metadata tags
@@ -16,7 +16,14 @@ DCIM_471100.jpg
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 2018-09-22 - My fantastic Tour - Stuttgart, Germany.jpg
 
-![Scheme](resources/screenshot.png)
+### UI
+![Scheme](resources/screenshot1.png)  
+
+![Scheme](resources/screenshot2.png)
+
+### Tags
+![Scheme](resources/screenshot3.png)  
+(tags after running, showed by GIMP)
 
 ## Requirements
 Installed Java 8 Runtime. Runs on
@@ -49,3 +56,14 @@ XMP  | NS_IPTCCORE/Location   | written
 XMP  | NS_PHOTOSHOP/City      | written
 XMP  | NS_PHOTOSHOP/Country   | written
 XMP  | NS_PHOTOSHOP/State     | written
+
+## Build
+To build jar from sources use following profiles:<br><br>
+build executable javafx jar containing all dependencies:  
+```mvn clean install -DwithDependencies```<br><br>  
+
+build .exe for Windows systems:  
+```mvn clean install -DwithDependencies -DmakeExe```<br><br>
+
+fast build without tests and dependencies:  
+```mvn clean install -DskipTests```
