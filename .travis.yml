@@ -7,3 +7,8 @@ jdk:
 
 os:
   - linux
+
+script:
+  - mvn clean install
+  - mvn clean install -DwithDependencies
+  - mvn clean install -DwithDependencies -DmakeExe
