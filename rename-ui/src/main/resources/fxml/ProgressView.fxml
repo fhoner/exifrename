@@ -23,39 +23,40 @@
                                 <Insets top="3.0" />
                             </padding>
                         </Label>
-                  <Label fx:id="lblProgress" prefHeight="19.0" prefWidth="161.0" text="{progress}">
-                     <padding>
-                        <Insets top="3.0" />
-                     </padding>
-                  </Label>
+                        <Label fx:id="lblProgress" prefHeight="19.0" prefWidth="161.0" text="0/0">
+                            <padding>
+                                <Insets top="3.0" />
+                            </padding>
+                        </Label>
                     </children>
                     <VBox.margin>
                         <Insets bottom="5.0" />
                     </VBox.margin>
                 </HBox>
                 <HBox prefHeight="100.0" prefWidth="200.0">
-               <children>
-                  <Label prefHeight="19.0" prefWidth="161.0">
-                     <padding>
-                        <Insets top="3.0" />
-                     </padding>
-                  </Label>
-                  <ProgressBar fx:id="pgrBar" prefHeight="20.0" prefWidth="419.0" progress="0.0" HBox.hgrow="ALWAYS">
-                     <HBox.margin>
-                        <Insets top="5.0" />
-                     </HBox.margin>
-                  </ProgressBar>
-               </children>
+                    <children>
+                        <Label prefHeight="19.0" prefWidth="161.0">
+                            <padding>
+                                <Insets top="3.0" />
+                            </padding>
+                        </Label>
+                        <ProgressBar fx:id="pgrBar" prefHeight="20.0" prefWidth="419.0" progress="0.0" HBox.hgrow="ALWAYS">
+                            <HBox.margin>
+                                <Insets top="5.0" />
+                            </HBox.margin>
+                        </ProgressBar>
+                    </children>
                 </HBox>
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>
-                        <Pane HBox.hgrow="ALWAYS" />
-                  <Button fx:id="btnAbort" mnemonicParsing="false" onAction="#abort" prefHeight="26.0" prefWidth="101.0" text="%abort" visible="false" />
-                        <Button fx:id="btnClose" mnemonicParsing="false" onAction="#close" prefHeight="26.0" prefWidth="101.0" text="%close">
+                        <Pane prefWidth="161.0" />
+                        <Label fx:id="lblAborting" text="%abortingLabel" visible="false" HBox.hgrow="ALWAYS">
                             <HBox.margin>
-                                <Insets left="5.0" />
+                                <Insets top="5.0" />
                             </HBox.margin>
-                        </Button>
+                        </Label>
+                        <Pane HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnAbort" mnemonicParsing="false" onAction="#abort" prefHeight="26.0" prefWidth="101.0" text="%abort" />
                     </children>
                     <VBox.margin>
                         <Insets top="25.0" />

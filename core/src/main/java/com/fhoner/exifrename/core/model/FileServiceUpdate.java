@@ -8,7 +8,14 @@ import lombok.Getter;
 @AllArgsConstructor
 public class FileServiceUpdate {
 
-    int filesCount;
-    int filesDone;
+    public enum Reason {PROGRESS, ABORT}
+
+    private Reason reason;
+    private int filesCount;
+    private int filesDone;
+
+    public boolean isDone() {
+        return filesCount == filesDone;
+    }
 
 }

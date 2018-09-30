@@ -5,7 +5,6 @@ import com.fhoner.exifrename.core.service.FileService;
 import com.fhoner.exifrename.core.util.FilenamePattern;
 import com.fhoner.exifrename.renameui.util.DialogUtil;
 import javafx.application.Platform;
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,6 +26,7 @@ public class ProgressController implements Initializable, Observer {
 
     private Thread thread;
     private SimpleBooleanProperty isRunningProp = new SimpleBooleanProperty();
+    private FileService fileService;
 
     @FXML
     public ResourceBundle bundle;
@@ -35,41 +35,24 @@ public class ProgressController implements Initializable, Observer {
     private Label lblProgress;
 
     @FXML
-    private Button btnClose;
-
-    @FXML
     private Button btnAbort;
 
     @FXML
     private ProgressBar pgrBar;
 
+    @FXML
+    private Label lblAborting;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
-
-        BooleanBinding bb = new BooleanBinding() {
-            {
-                super.bind(isRunningProp);
-            }
-
-            @Override
-            protected boolean computeValue() {
-                return isRunningProp.getValue();
-            }
-        };
-
-        btnClose.disableProperty().bind(bb);
     }
 
     @FXML
     private void abort(ActionEvent event) {
-
-    }
-
-    @FXML
-    private void close(ActionEvent event) {
-        Stage stage = (Stage) btnClose.getScene().getWindow();
-        stage.close();
+        fileService.cancel();
+        btnAbort.setDisable(true);
+        lblAborting.setVisible(true);
     }
 
     public void start() {
@@ -84,16 +67,11 @@ public class ProgressController implements Initializable, Observer {
                 public void run() {
                     try {
                         isRunningProp.set(true);
-                        FileService fs = new FileService();
-                        fs.addObserver(ref);
-                        fs.addFiles(sourceDir);
+                        fileService = new FileService();
+                        fileService.addObserver(ref);
+                        fileService.addFiles(sourceDir);
                         FilenamePattern pattern = FilenamePattern.fromString(schema);
-                        fs.formatFiles(pattern, destDir);
-                        Platform.runLater(() -> DialogUtil.showInfoDialog(
-                                bundle.getString("done"),
-                                bundle.getString("success"),
-                                MessageFormat.format(bundle.getString("imagesCopiedDialog"), fs.getFiles().size()),
-                                null));
+                        fileService.formatFiles(pattern, destDir);
                     } catch (Exception ex) {
                         log.error("could not finish", ex);
                         Platform.runLater(() -> DialogUtil.showErrorDialog(
@@ -114,8 +92,26 @@ public class ProgressController implements Initializable, Observer {
     public void update(Observable o, Object arg) {
         FileServiceUpdate update = (FileServiceUpdate) arg;
         Platform.runLater(() -> {
-            lblProgress.setText(update.getFilesDone() + "/" + update.getFilesCount());
-            pgrBar.setProgress(update.getFilesDone() / (double) update.getFilesCount());
+            switch (update.getReason()) {
+                case PROGRESS:
+                    lblProgress.setText(update.getFilesDone() + "/" + update.getFilesCount());
+                    pgrBar.setProgress(update.getFilesDone() / (double) update.getFilesCount());
+                    if (update.isDone()) {
+                        DialogUtil.showInfoDialog(
+                                bundle.getString("done"),
+                                bundle.getString("success"),
+                                MessageFormat.format(bundle.getString("imagesCopiedDialog"), fileService.getFiles().size()),
+                                null);
+                        ((Stage) btnAbort.getScene().getWindow()).close();
+                    }
+                    break;
+                case ABORT:
+                    String header = bundle.getString("abortHeader");
+                    String msg = MessageFormat.format(bundle.getString("abortMessage"), update.getFilesDone(), update.getFilesCount());
+                    DialogUtil.showWarningDialog(header, header, msg, null);
+                    ((Stage) btnAbort.getScene().getWindow()).close();
+                    break;
+            }
         });
         log.debug("progress changed: " + update.getFilesDone() + "/" + update.getFilesCount());
     }

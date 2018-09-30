@@ -13,6 +13,7 @@ import com.fhoner.exifrename.core.tagging.ImageMetaTagger;
 import com.fhoner.exifrename.core.tagging.IptcTagSet;
 import com.fhoner.exifrename.core.util.FilenamePattern;
 import com.fhoner.exifrename.core.util.MetadataUtil;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j;
@@ -25,6 +26,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+
+import static com.fhoner.exifrename.core.model.FileServiceUpdate.Reason;
 
 /**
  * Class which provides functions to add files within directorys. After that, copy all files with new name into a
@@ -33,6 +38,28 @@ import java.util.*;
 @Log4j
 @Getter
 public class FileService extends Observable {
+
+    @AllArgsConstructor
+    class CopyTask implements Callable {
+        private File file;
+        private FilenamePattern pattern;
+        private String destination;
+
+        @Override
+        public Object call() throws Exception {
+            log.debug("processing " + file.getName());
+            Metadata exif = ImageMetadataReader.readMetadata(file);
+            String s = file.getAbsolutePath();
+            Path source = Paths.get(file.getAbsolutePath());
+            Path destinationPath = getNewFileName(pattern, destination, exif, file);
+            log.info("moving " + source + " to " + destinationPath);
+            Files.copy(source, destinationPath);
+            writeTags(destinationPath, exif);
+            log.debug("done with " + file.getName());
+            sendUpdate(new FileServiceUpdate(Reason.PROGRESS, files.size(), files.indexOf(file) + 1));
+            return file;
+        }
+    }
 
     private static final String COPYRIGHT = "exifrename by Felix Honer";
     private static final Set<String> FILE_EXTENSION_WHITELIST;
@@ -45,6 +72,7 @@ public class FileService extends Observable {
 
     private List<File> files = new ArrayList<>();
     private Map<String, Exception[]> errors = new HashMap<>();
+    private volatile boolean cancelled = false;
 
     /**
      * Adds files in the given directory. Only jpg/jpeg are considered, case insensitive.
@@ -59,10 +87,12 @@ public class FileService extends Observable {
             throw new FileNotFoundException();
         }
 
+        final int[] progress = new int[]{0};    // dear java, this is really ugly :-/
         File[] files = source.listFiles((dir, name) -> {
             String extension = FilenameUtils.getExtension(name).toLowerCase();
             if (FILE_EXTENSION_WHITELIST.contains(extension)) {
                 log.debug("file added: " + dir + "/" + name);
+                sendUpdate(new FileServiceUpdate(Reason.PROGRESS, ++progress[0], 0));
                 return true;
             } else {
                 log.debug("file not supported: " + dir + "/" + name);
@@ -90,18 +120,24 @@ public class FileService extends Observable {
         }
 
         log.info("starting creating files in " + destination + "using pattern '" + pattern.getPattern() + "'");
+        List<FutureTask> tasks = new ArrayList<>();
         for (File file : files) {
-            Metadata exif = ImageMetadataReader.readMetadata(file);
-            String s = file.getAbsolutePath();
-            Path source = Paths.get(file.getAbsolutePath());
-            Path destinationPath = getNewFileName(pattern, destination, exif, file);
-            log.info("moving " + source + " to " + destinationPath);
-            Files.copy(source, destinationPath);
-            sendUpdate(new FileServiceUpdate(files.size(), files.indexOf(file) + 1));
-
-            writeTags(destinationPath, exif);
+            tasks.add(new FutureTask<CopyTask>(new CopyTask(file, pattern, destination)));
         }
-        log.info("done. created " + files.size() + " files");
+
+        for (FutureTask task : tasks) {
+            if (cancelled) {
+                log.info("aborted file task processing");
+                sendUpdate(new FileServiceUpdate(Reason.ABORT, tasks.size(), tasks.indexOf(task) + 1));
+                break;
+            }
+            task.run();
+        }
+    }
+
+    public void cancel() {
+        log.info("received abort request. setting abort flag now");
+        this.cancelled = true;
     }
 
     private void writeTags(Path path, Metadata exif) throws IOException {
@@ -146,7 +182,7 @@ public class FileService extends Observable {
         Path result;
         String extension = "." + FilenameUtils.getExtension(source.getName());
         Integer number = null;
-        boolean recreate = false;
+        boolean recreate;
 
         String formattedFilename = pattern.formatFilename(exif);
         addErrors(source, pattern);
