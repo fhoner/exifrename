@@ -1,9 +1,9 @@
 package com.fhoner.exifrename.core.tagging;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.XMPMeta;
-import com.adobe.xmp.XMPMetaFactory;
-import com.adobe.xmp.options.SerializeOptions;
+import com.adobe.internal.xmp.XMPException;
+import com.adobe.internal.xmp.XMPMeta;
+import com.adobe.internal.xmp.XMPMetaFactory;
+import com.adobe.internal.xmp.options.SerializeOptions;
 import com.icafe4j.image.meta.Metadata;
 import com.icafe4j.image.meta.iptc.IPTCDataSet;
 import com.icafe4j.image.meta.xmp.XMP;

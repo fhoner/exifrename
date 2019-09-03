@@ -9,6 +9,7 @@ import com.fhoner.exifrename.core.model.GpsRecord;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.log4j.Log4j;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,6 +23,7 @@ import java.util.stream.StreamSupport;
  * Provides some util methods.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Log4j
 public final class MetadataUtil {
 
     public static final String TAG_GPS_LAT_REF = "GPS/GPS Latitude Ref";
@@ -42,7 +44,7 @@ public final class MetadataUtil {
         return StreamSupport.stream(exifData.getDirectories().spliterator(), false)
                 .map(Directory::getTags)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toMap(MetadataUtil::getKey, Function.identity()));
+                .collect(Collectors.toMap(MetadataUtil::getKey, Function.identity(), (tag1, tag2) -> tag1)); // ignore duplicates, use the first one
     }
 
     /**
@@ -53,8 +55,7 @@ public final class MetadataUtil {
      */
     public static double convertGpsToDecimalDegree(@NonNull GpsRecord rec) {
         int factor = rec.getRef() == GpsRecord.Ref.N || rec.getRef() == GpsRecord.Ref.E ? 1 : -1;
-        double val = factor * (Math.abs(rec.getDegrees()) + (rec.getMinutes().doubleValue() / 60.0) + (rec.getSeconds().doubleValue() / 3600.0));
-        return val;
+        return factor * (Math.abs(rec.getDegrees()) + (rec.getMinutes().doubleValue() / 60.0) + (rec.getSeconds().doubleValue() / 3600.0));
     }
 
     /**
@@ -95,7 +96,7 @@ public final class MetadataUtil {
      * @param tags Exif metadata.
      * @return Date and time of creation.
      */
-    public static LocalDateTime getDateTime(@NonNull Map<String, Tag> tags) throws TagNotFoundException {
+    static LocalDateTime getDateTime(@NonNull Map<String, Tag> tags) throws TagNotFoundException {
         Tag dateTimeTag = tags.get(TAGS_DATE_TIME);
         if (dateTimeTag == null) {
             throw new TagNotFoundException("no creation time present");

@@ -2,11 +2,14 @@ package com.fhoner.test.service;
 
 import com.fhoner.exifrename.core.service.FileService;
 import com.fhoner.exifrename.core.util.FilenamePattern;
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,48 +23,60 @@ public class TestFileService {
 
     private static final String SAMPLE_IMAGE_NAME = "images/sample.JPG";
     private static final String SAMPLE_IMAGE_NAME_NO_GPS = "images/sample_nogps.jpg";
+    private static final String SAMPLE_IMAGE_DUPLICATED_KEYS = "images/bug_190903.JPG";
     private static final String TEMP_DIR = System.getProperty("java.io.tmpdir") + "/" + UUID.randomUUID().toString();
     private static final String DESTINATION_DIR = System.getProperty("java.io.tmpdir") + "/" + UUID.randomUUID().toString();
     private static final String FILENAME = TEMP_DIR + "/" + UUID.randomUUID().toString().substring(0, 7) + ".jpg";
-
-    private static boolean init = false;
 
     private FileService fileService;
 
     @Before
     public void init() throws Exception {
         this.fileService = new FileService();
+    }
 
-        if (!init) {
-            File file = new File(getClass().getClassLoader().getResource(SAMPLE_IMAGE_NAME).getFile());
-            Path source = Paths.get(file.getAbsolutePath());
+    @After
+    public void cleanup() throws IOException {
+        FileUtils.deleteDirectory(new File(DESTINATION_DIR));
+    }
 
-            File fileNogps = new File(getClass().getClassLoader().getResource(SAMPLE_IMAGE_NAME_NO_GPS).getFile());
-            Path sourceNogps = Paths.get(fileNogps.getAbsolutePath());
+    private void copyFile(String filename) throws IOException {
+        Path dest = Paths.get(FILENAME);
+        String destPath = dest.getParent().toString();
+        (new File(destPath)).mkdirs();
 
-            Path dest = Paths.get(FILENAME);
-            Path dest2 = Paths.get(FILENAME.replace(".jpg", "_2.jpg"));
-            Path dest3 = Paths.get(FILENAME.replace(".jpg", "_3.jpg"));
-            Path dest4 = Paths.get(FILENAME.replace(".jpg", "_4.mpeg"));
-            Path dest5 = Paths.get(FILENAME.replace(".jpg", "_5.jpg"));
-            String destPath = dest.getParent().toString();
-            (new File(destPath)).mkdirs();
-            Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(source, dest2, StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(source, dest3, StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(source, dest4, StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(sourceNogps, dest5, StandardCopyOption.REPLACE_EXISTING);
-            init = true;
-        }
+        File file = new File(getClass().getClassLoader().getResource(filename).getFile());
+        Path source = Paths.get(file.getAbsolutePath());
+        Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING);
     }
 
     @Test
-    public void shouldRenameFiles() throws Exception {
+    public void shouldRenameFileWithGps() throws Exception {
+        copyFile(SAMPLE_IMAGE_NAME);
         FilenamePattern pattern = FilenamePattern.fromString("%c test");
         fileService.addFiles(TEMP_DIR);
         fileService.formatFiles(pattern, DESTINATION_DIR);
-
         File newFile = new File(DESTINATION_DIR + "/Dax test.jpg");
+        assertThat(newFile, anExistingFile());
+    }
+
+    @Test
+    public void shouldRenameFileWithoutGps() throws Exception {
+        copyFile(SAMPLE_IMAGE_NAME_NO_GPS);
+        FilenamePattern pattern = FilenamePattern.fromString("%c test");
+        fileService.addFiles(TEMP_DIR);
+        fileService.formatFiles(pattern, DESTINATION_DIR);
+        File newFile = new File(DESTINATION_DIR + "/test [No-GPS].jpg");
+        assertThat(newFile, anExistingFile());
+    }
+
+    @Test
+    public void shouldRenameWithDuplicatedTagKeys() throws Exception {
+        copyFile(SAMPLE_IMAGE_DUPLICATED_KEYS);
+        FilenamePattern pattern = FilenamePattern.fromString("%c test");
+        fileService.addFiles(TEMP_DIR);
+        fileService.formatFiles(pattern, DESTINATION_DIR);
+        File newFile = new File(DESTINATION_DIR + "/test [No-GPS].jpg");
         assertThat(newFile, anExistingFile());
     }
 

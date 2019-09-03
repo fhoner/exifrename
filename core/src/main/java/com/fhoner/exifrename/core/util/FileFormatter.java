@@ -10,7 +10,7 @@ import com.fhoner.exifrename.core.service.AddressService;
 import com.fhoner.exifrename.core.service.GeoService;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
-import org.apache.commons.text.StrBuilder;
+import org.apache.commons.text.TextStringBuilder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -169,7 +169,7 @@ public class FileFormatter {
         Matcher matcher = pattern.matcher(value);
         while (matcher.find()) {
             String match = matcher.group(1);
-            StrBuilder builder = new StrBuilder(value);
+            TextStringBuilder builder = new TextStringBuilder(value);
             int posBeforeMatch = value.length() - match.length();
             builder.insert(posBeforeMatch, DEFAULT_SEPARATOR);
             value = builder.build();

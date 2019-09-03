@@ -1,7 +1,7 @@
 package com.fhoner.exifrename.core.service;
 
-import com.adobe.xmp.XMPConst;
-import com.adobe.xmp.XMPException;
+import com.adobe.internal.xmp.XMPConst;
+import com.adobe.internal.xmp.XMPException;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;

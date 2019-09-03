@@ -4,6 +4,7 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.extern.log4j.Log4j;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -13,6 +14,7 @@ import java.util.Set;
  * Used to represent a schema for naming.
  */
 @Getter
+@Log4j
 public class FilenamePattern {
 
     private String pattern;
@@ -41,11 +43,16 @@ public class FilenamePattern {
      */
     public String formatFilename(@NonNull Metadata exifData) {
         errors.clear();
-        Map<String, Tag> tags = MetadataUtil.getTags(exifData);
-        FileFormatter formatter = new FileFormatter(this.pattern, tags);
-        String formatted = formatter.format();
-        this.errors.addAll(formatter.getErrors());
-        return formatted.replace("/", "-");
+        try {
+            Map<String, Tag> tags = MetadataUtil.getTags(exifData);
+            FileFormatter formatter = new FileFormatter(this.pattern, tags);
+            String formatted = formatter.format();
+            this.errors.addAll(formatter.getErrors());
+            return formatted.replace("/", "-");
+        } catch(Exception ex) {
+            log.error(ex);
+            throw ex;
+        }
     }
 
 }

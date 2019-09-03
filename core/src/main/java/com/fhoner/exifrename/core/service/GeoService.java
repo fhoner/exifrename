@@ -7,7 +7,7 @@ import com.fhoner.exifrename.core.util.MetadataUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import org.apache.commons.text.StrSubstitutor;
+import org.apache.commons.text.StringSubstitutor;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -97,7 +97,7 @@ public class GeoService {
         Map<String, String> data = new HashMap<>();
         data.put("latitude", String.valueOf(dlat));
         data.put("longtitude", String.valueOf(dlon));
-        return StrSubstitutor.replace(API_URL, data);
+        return StringSubstitutor.replace(API_URL, data);
     }
 
     private void block() throws InterruptedException {

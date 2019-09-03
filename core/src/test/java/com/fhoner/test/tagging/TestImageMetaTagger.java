@@ -1,7 +1,7 @@
 package com.fhoner.test.tagging;
 
-import com.adobe.xmp.XMPConst;
-import com.adobe.xmp.XMPException;
+import com.adobe.internal.xmp.XMPConst;
+import com.adobe.internal.xmp.XMPException;
 import com.fhoner.exifrename.core.tagging.ImageMetaTagger;
 import com.fhoner.exifrename.core.tagging.IptcTagSet;
 import lombok.extern.log4j.Log4j;

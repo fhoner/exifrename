@@ -1,9 +1,10 @@
 package com.fhoner.test.example;
 
-import com.adobe.xmp.XMPConst;
-import com.adobe.xmp.XMPMeta;
-import com.adobe.xmp.XMPMetaFactory;
-import com.adobe.xmp.options.SerializeOptions;
+
+import com.adobe.internal.xmp.XMPConst;
+import com.adobe.internal.xmp.XMPMeta;
+import com.adobe.internal.xmp.XMPMetaFactory;
+import com.adobe.internal.xmp.options.SerializeOptions;
 import com.drew.imaging.ImageProcessingException;
 import com.fhoner.exifrename.core.service.FileService;
 import com.fhoner.exifrename.core.tagging.XmpParser;
