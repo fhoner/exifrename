@@ -3,12 +3,7 @@ language: java
 sudo: false
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 os:
   - linux
-
-script:
-  - mvn clean install
-  - mvn clean install -DwithDependencies
-  - mvn clean install -DwithDependencies -DmakeExe
