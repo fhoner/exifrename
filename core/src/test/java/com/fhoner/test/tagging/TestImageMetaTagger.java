@@ -4,20 +4,16 @@ import com.adobe.internal.xmp.XMPConst;
 import com.adobe.internal.xmp.XMPException;
 import com.fhoner.exifrename.core.tagging.ImageMetaTagger;
 import com.fhoner.exifrename.core.tagging.IptcTagSet;
-import lombok.extern.log4j.Log4j;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import lombok.extern.log4j.Log4j2;
+import org.junit.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-@Log4j
+@Log4j2
 public class TestImageMetaTagger {
 
     private static final String TEMP_DIR = System.getProperty("java.io.tmpdir");

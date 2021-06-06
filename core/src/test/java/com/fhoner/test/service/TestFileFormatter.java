@@ -3,9 +3,7 @@ package com.fhoner.test.service;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
-import com.fhoner.exifrename.core.model.Address;
-import com.fhoner.exifrename.core.model.GpsRecord;
-import com.fhoner.exifrename.core.model.OSMRecord;
+import com.fhoner.exifrename.core.model.*;
 import com.fhoner.exifrename.core.service.GeoService;
 import com.fhoner.exifrename.core.util.FileFormatter;
 import com.fhoner.exifrename.core.util.MetadataUtil;
@@ -19,7 +17,7 @@ import java.io.File;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -58,7 +56,7 @@ public class TestFileFormatter {
     public void shouldFormatDateTime() throws Exception {
         FileFormatter formatter = new FileFormatter("%y-%m-%d %m:%h:%s", tags);
         Whitebox.setInternalState(formatter, "tags", tags);
-        assertThat(formatter.format(), is("2018-08-07 08:20:35"));
+        assertThat(formatter.format(), equalTo("2018-08-07 08:20:35"));
     }
 
     @Test
@@ -66,7 +64,7 @@ public class TestFileFormatter {
         FileFormatter formatter = new FileFormatter("%t %c %S %C", tags);
         Whitebox.setInternalState(formatter, "tags", tags);
         Whitebox.setInternalState(formatter, "geoService", geoServiceMock);
-        assertThat(formatter.format(), is("Capbreton Dax Nouvelle-Aquitaine France"));
+        assertThat(formatter.format(), equalTo("Capbreton Landes Nouvelle-Aquitaine France"));
     }
 
     @Test
@@ -74,7 +72,7 @@ public class TestFileFormatter {
         FileFormatter formatter = new FileFormatter("%t Felix %y-Honer %c %S %C", tags);
         Whitebox.setInternalState(formatter, "tags", tags);
         Whitebox.setInternalState(formatter, "geoService", geoServiceMock);
-        assertThat(formatter.format(), is("Capbreton Felix 2018-Honer Dax Nouvelle-Aquitaine France"));
+        assertThat(formatter.format(), equalTo("Capbreton Felix 2018-Honer Landes Nouvelle-Aquitaine France"));
     }
 
     @Test
@@ -83,7 +81,7 @@ public class TestFileFormatter {
         FileFormatter formatter = new FileFormatter("%t Felix Honer %c %S %C", tags);
         Whitebox.setInternalState(formatter, "tags", tags);
         Whitebox.setInternalState(formatter, "geoService", geoServiceMock);
-        assertThat(formatter.format(), is("Felix Honer [No-GPS]"));
+        assertThat(formatter.format(), equalTo("Felix Honer [No-GPS]"));
     }
 
     @Test
@@ -91,7 +89,7 @@ public class TestFileFormatter {
         tags.clear();
         FileFormatter formatter = new FileFormatter("%y test", tags);
         Whitebox.setInternalState(formatter, "tags", tags);
-        assertThat(formatter.format(), is("test [No-Date]"));
+        assertThat(formatter.format(), equalTo("test [No-Date]"));
     }
 
     @Test
@@ -100,7 +98,7 @@ public class TestFileFormatter {
         FileFormatter formatter = new FileFormatter("%y %t Felix Honer %c %S %C", tags);
         Whitebox.setInternalState(formatter, "tags", tags);
         Whitebox.setInternalState(formatter, "geoService", geoServiceMock);
-        assertThat(formatter.format(), is("Felix Honer [No-GPS] [No-Date]"));
+        assertThat(formatter.format(), equalTo("Felix Honer [No-GPS] [No-Date]"));
     }
 
 }

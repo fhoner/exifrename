@@ -2,12 +2,10 @@ package com.fhoner.exifrename.core.model;
 
 import com.fhoner.exifrename.core.util.MetadataUtil;
 import lombok.*;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents a single gps record, which means two instances are needed, one for latitude and another one for
@@ -18,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@Log4j
+@Log4j2
 @EqualsAndHashCode
 @ToString
 public class GpsRecord {

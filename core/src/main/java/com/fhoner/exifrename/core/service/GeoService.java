@@ -6,13 +6,10 @@ import com.fhoner.exifrename.core.model.OSMRecord;
 import com.fhoner.exifrename.core.util.MetadataUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.text.StringSubstitutor;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
@@ -23,7 +20,7 @@ import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 /**
  * Does the communication between gps lookup server.
  */
-@Log4j
+@Log4j2
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GeoService {
 

@@ -1,9 +1,7 @@
 package com.fhoner.exifrename.renameui.util;
 
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Window;

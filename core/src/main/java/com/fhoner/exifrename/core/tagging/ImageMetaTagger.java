@@ -1,26 +1,16 @@
 package com.fhoner.exifrename.core.tagging;
 
-import com.adobe.internal.xmp.XMPException;
-import com.adobe.internal.xmp.XMPMeta;
-import com.adobe.internal.xmp.XMPMetaFactory;
+import com.adobe.internal.xmp.*;
 import com.adobe.internal.xmp.options.SerializeOptions;
 import com.icafe4j.image.meta.Metadata;
 import com.icafe4j.image.meta.iptc.IPTCDataSet;
 import com.icafe4j.image.meta.xmp.XMP;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Getter()
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

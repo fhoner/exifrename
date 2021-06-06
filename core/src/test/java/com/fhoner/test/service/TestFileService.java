@@ -3,17 +3,10 @@ package com.fhoner.test.service;
 import com.fhoner.exifrename.core.service.FileService;
 import com.fhoner.exifrename.core.util.FilenamePattern;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.io.*;
+import java.nio.file.*;
 import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -56,7 +49,7 @@ public class TestFileService {
         FilenamePattern pattern = FilenamePattern.fromString("%c test");
         fileService.addFiles(TEMP_DIR);
         fileService.formatFiles(pattern, DESTINATION_DIR);
-        File newFile = new File(DESTINATION_DIR + "/Dax test.jpg");
+        File newFile = new File(DESTINATION_DIR + "/Landes test.jpg");
         assertThat(newFile, anExistingFile());
     }
 

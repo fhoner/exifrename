@@ -3,7 +3,6 @@ package com.fhoner.exifrename.core.service;
 import com.adobe.internal.xmp.XMPConst;
 import com.adobe.internal.xmp.XMPException;
 import com.drew.imaging.ImageMetadataReader;
-import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import com.fhoner.exifrename.core.exception.GpsReverseLookupException;
 import com.fhoner.exifrename.core.exception.TagEmptyException;
@@ -13,18 +12,12 @@ import com.fhoner.exifrename.core.tagging.ImageMetaTagger;
 import com.fhoner.exifrename.core.tagging.IptcTagSet;
 import com.fhoner.exifrename.core.util.FilenamePattern;
 import com.fhoner.exifrename.core.util.MetadataUtil;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.extern.log4j.Log4j;
+import lombok.*;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
+import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
@@ -35,7 +28,7 @@ import static com.fhoner.exifrename.core.model.FileServiceUpdate.Reason;
  * Class which provides functions to add files within directorys. After that, copy all files with new name into a
  * separate destination folder.
  */
-@Log4j
+@Log4j2
 @Getter
 public class FileService extends Observable {
 
@@ -108,9 +101,9 @@ public class FileService extends Observable {
      *
      * @param pattern     The pattern for ne new file names.
      * @param destination Destination directory where files will be stored.
-     * @throws Exception Thrown on several errors (tbd).
+     * @throws IOException Thrown on several errors (tbd).
      */
-    public void formatFiles(@NonNull FilenamePattern pattern, @NonNull String destination) throws IOException, ImageProcessingException {
+    public void formatFiles(@NonNull FilenamePattern pattern, @NonNull String destination) throws IOException {
         if (files.size() < 1) {
             sendUpdate(new FileServiceUpdate(Reason.PROGRESS, 0, 0));
             return;

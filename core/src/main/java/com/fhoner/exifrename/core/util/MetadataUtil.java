@@ -1,15 +1,11 @@
 package com.fhoner.exifrename.core.util;
 
-import com.drew.metadata.Directory;
-import com.drew.metadata.Metadata;
-import com.drew.metadata.Tag;
+import com.drew.metadata.*;
 import com.fhoner.exifrename.core.exception.TagEmptyException;
 import com.fhoner.exifrename.core.exception.TagNotFoundException;
 import com.fhoner.exifrename.core.model.GpsRecord;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.extern.log4j.Log4j;
+import lombok.*;
+import lombok.extern.log4j.Log4j2;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,7 +19,7 @@ import java.util.stream.StreamSupport;
  * Provides some util methods.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Log4j
+@Log4j2
 public final class MetadataUtil {
 
     public static final String TAG_GPS_LAT_REF = "GPS/GPS Latitude Ref";

@@ -1,11 +1,7 @@
 package com.fhoner.test.example;
 
-
-import com.adobe.internal.xmp.XMPConst;
-import com.adobe.internal.xmp.XMPMeta;
-import com.adobe.internal.xmp.XMPMetaFactory;
+import com.adobe.internal.xmp.*;
 import com.adobe.internal.xmp.options.SerializeOptions;
-import com.drew.imaging.ImageProcessingException;
 import com.fhoner.exifrename.core.service.FileService;
 import com.fhoner.exifrename.core.tagging.XmpParser;
 import com.fhoner.exifrename.core.util.FilenamePattern;
@@ -13,19 +9,15 @@ import com.icafe4j.image.meta.Metadata;
 import com.icafe4j.image.meta.iptc.IPTCApplicationTag;
 import com.icafe4j.image.meta.iptc.IPTCDataSet;
 import com.icafe4j.image.meta.xmp.XMP;
-import lombok.extern.log4j.Log4j;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import lombok.extern.log4j.Log4j2;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Log4j
+@Log4j2
 public class TestSamples {
 
     @Test
@@ -47,10 +39,8 @@ public class TestSamples {
             });
         } catch (FileNotFoundException ex) {
             log.error("directory not found", ex);
-        } catch (ImageProcessingException ex) {
-            System.out.println(ExceptionUtils.getStackTrace(ex));
         } catch (IOException ex) {
-            System.out.println(ExceptionUtils.getStackTrace(ex));
+            log.error(ex);
         }
     }
 

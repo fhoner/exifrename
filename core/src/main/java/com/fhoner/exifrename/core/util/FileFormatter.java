@@ -1,27 +1,22 @@
 package com.fhoner.exifrename.core.util;
 
 import com.drew.metadata.Tag;
-import com.fhoner.exifrename.core.exception.GpsReverseLookupException;
-import com.fhoner.exifrename.core.exception.TagEmptyException;
-import com.fhoner.exifrename.core.exception.TagNotFoundException;
+import com.fhoner.exifrename.core.exception.*;
 import com.fhoner.exifrename.core.model.Address;
 import com.fhoner.exifrename.core.model.OSMRecord;
 import com.fhoner.exifrename.core.service.AddressService;
 import com.fhoner.exifrename.core.service.GeoService;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.text.TextStringBuilder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Log4j
+@Log4j2
 @Getter
 public class FileFormatter {
 

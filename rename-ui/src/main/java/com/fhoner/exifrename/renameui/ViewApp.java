@@ -15,6 +15,10 @@ public class ViewApp extends Application {
     private static Parent mainPanel;
     private static Scene mainScene;
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         Scene scene = initMainScene();

@@ -4,17 +4,15 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Used to represent a schema for naming.
  */
 @Getter
-@Log4j
+@Log4j2
 public class FilenamePattern {
 
     private String pattern;
