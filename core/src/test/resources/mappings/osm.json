@@ -1,0 +1,27 @@
+{
+  "place_id": 119579814,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+  "osm_type": "way",
+  "osm_id": 124414750,
+  "lat": "43.6557748",
+  "lon": "-1.446497155742383",
+  "display_name": "Digue Nord, Quai du Vieil Adour, Le Port, Capbreton, District of Dax, Landes, New Aquitaine, Metropolitan France, 40130, France",
+  "address": {
+    "man_made": "Digue Nord",
+    "road": "Quai du Vieil Adour",
+    "neighbourhood": "Le Port",
+    "village": "Capbreton",
+    "municipality": "District of Dax",
+    "county": "Landes",
+    "state": "New Aquitaine",
+    "country": "France",
+    "postcode": "40130",
+    "country_code": "fr"
+  },
+  "boundingbox": [
+    "43.6555922",
+    "43.6560112",
+    "-1.4483971",
+    "-1.4456052"
+  ]
+}

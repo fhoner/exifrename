@@ -1,8 +1,8 @@
-# Rename by EXIF [![Build Status](https://travis-ci.org/fhoner/exifrename.svg?branch=master)](https://travis-ci.org/fhoner/exifrename)
-Rename and tag your JPEG files by defining your own filename pattern.
-* renames your files as you defined the naming schema
-* translate gps coordinates to address information
-* writes IPTC and XMP metadata tags
+# Exifrename ![build status](https://github.com/fhoner/exifrename/actions/workflows/build.yaml/badge.svg)
+Rename and tag your JPEG files by defining your own filename pattern based on exif metadata:
+* translates gps coordinates to address information
+* writes geo metadata in IPTC and XMP
+* renames your files based on your custom naming schema
 
 ## Sample
 

@@ -18,7 +18,7 @@ public class AddressService {
     public OSMRecord getAddress() throws TagEmptyException, GpsReverseLookupException {
         GpsRecord lat = MetadataUtil.getLatitude(tags);
         GpsRecord lon = MetadataUtil.getLongtitude(tags);
-        return GeoService.getInstance().reverseLookup(lat, lon);
+        return new GeoService().reverseLookup(lat, lon);
     }
 
 }

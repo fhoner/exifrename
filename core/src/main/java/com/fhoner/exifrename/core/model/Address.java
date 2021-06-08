@@ -1,10 +1,7 @@
 package com.fhoner.exifrename.core.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.gson.annotations.SerializedName;
 import lombok.*;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 @Getter
 @Setter
@@ -12,8 +9,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@XmlRootElement
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Address {
 
     private String water;
@@ -23,14 +18,14 @@ public class Address {
     private String town;
     private String city;
 
-    @XmlElement(name = "city_district")
+    @SerializedName("city_district")
     private String cityDistrict;
     private String county;
     private String state;
     private String country;
     private String postcode;
 
-    @XmlElement(name = "country_code")
+    @SerializedName("country_code")
     private String countryCode;
 
     public String getVillage() {
@@ -46,11 +41,11 @@ public class Address {
     }
 
     private String getTownCityVillage() {
-        if (village != null && !String.valueOf(village).isEmpty()) {
+        if (village != null && !village.isEmpty()) {
             return village;
-        } else if (city != null && !String.valueOf(city).isEmpty()) {
+        } else if (city != null && !city.isEmpty()) {
             return city;
-        } else if (town != null && !String.valueOf(town).isEmpty()) {
+        } else if (town != null && !town.isEmpty()) {
             return town;
         }
         return null;
