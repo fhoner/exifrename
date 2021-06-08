@@ -1,6 +1,7 @@
 package com.fhoner.exifrename.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.*;
 
 import javax.xml.bind.annotation.XmlElement;

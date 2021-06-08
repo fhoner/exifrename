@@ -12,9 +12,6 @@ import java.util.ResourceBundle;
 
 public class ViewApp extends Application {
 
-    private static Parent mainPanel;
-    private static Scene mainScene;
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -31,9 +28,8 @@ public class ViewApp extends Application {
         FXMLLoader.setDefaultClassLoader(ViewApp.class.getClassLoader());
         FXMLLoader fxmlLoader = new FXMLLoader(ViewApp.class.getResource("/fxml/RenameView.fxml"));
         fxmlLoader.setResources(getLanguage());
-        mainPanel = fxmlLoader.load();
-        mainScene = new Scene(mainPanel);
-        return mainScene;
+        Parent mainPanel = fxmlLoader.load();
+        return new Scene(mainPanel);
     }
 
     private static ResourceBundle getLanguage() {

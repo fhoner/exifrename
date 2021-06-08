@@ -7,9 +7,10 @@ plugins {
 compileJava {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
+    options.encoding = "UTF-8"
 }
 
-mainClassName = 'com.fhoner.exifrename.renameui.ViewApp'
+mainClassName = 'com.fhoner.exifrename.renameui.Main'
 
 repositories {
     mavenCentral()
@@ -22,13 +23,26 @@ repositories {
 }
 
 dependencies {
+    implementation project(":core")
+    implementation("org.apache.logging.log4j:log4j-core:2.14.1")
     compileOnly 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
-    implementation("log4j:log4j:1.2.17")
-    implementation project(":core")
+    runtimeOnly("org.openjfx:javafx-graphics:$javafx.version:win")
+    runtimeOnly("org.openjfx:javafx-graphics:$javafx.version:linux")
+    runtimeOnly("org.openjfx:javafx-graphics:$javafx.version:mac")
 }
 
 javafx {
     version = "11.0.2"
     modules = ['javafx.controls', 'javafx.fxml']
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    manifest {
+        attributes 'Main-Class': 'com.fhoner.exifrename.renameui.Main'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }

@@ -11,13 +11,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.*;
 
-@Log4j
+@Log4j2
 public class ProgressController implements Initializable, Observer {
 
     private Thread thread;
