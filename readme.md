@@ -58,12 +58,10 @@ XMP  | NS_PHOTOSHOP/Country   | written
 XMP  | NS_PHOTOSHOP/State     | written
 
 ## Build
-To build jar from sources use following profiles:<br><br>
-build executable javafx jar containing all dependencies:  
-```mvn clean install -DwithDependencies```<br><br>  
+Run build with tests
 
-build .exe for Windows systems:  
-```mvn clean install -DwithDependencies -DmakeExe```<br><br>
+```./gradlew build```
 
-fast build without tests and dependencies:  
-```mvn clean install -DskipTests```
+Build cross-platform fat jar
+
+```./gradlew jar```
