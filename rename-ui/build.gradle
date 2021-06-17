@@ -27,6 +27,8 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-core:2.14.1")
     compileOnly 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    implementation("com.google.inject:guice:5.0.1")
+    implementation("net.jmob:guice.conf:1.4.3")
     runtimeOnly("org.openjfx:javafx-graphics:$javafx.version:win")
     runtimeOnly("org.openjfx:javafx-graphics:$javafx.version:linux")
     runtimeOnly("org.openjfx:javafx-graphics:$javafx.version:mac")

@@ -92,7 +92,7 @@ public final class MetadataUtil {
      * @param tags Exif metadata.
      * @return Date and time of creation.
      */
-    static LocalDateTime getDateTime(@NonNull Map<String, Tag> tags) throws TagNotFoundException {
+    public static LocalDateTime getDateTime(@NonNull Map<String, Tag> tags) throws TagNotFoundException {
         Tag dateTimeTag = tags.get(TAGS_DATE_TIME);
         if (dateTimeTag == null) {
             throw new TagNotFoundException("no creation time present");

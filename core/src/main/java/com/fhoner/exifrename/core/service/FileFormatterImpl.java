@@ -1,29 +1,35 @@
-package com.fhoner.exifrename.core.util;
+package com.fhoner.exifrename.core.service;
 
+import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
-import com.fhoner.exifrename.core.exception.*;
+import com.fhoner.exifrename.core.exception.GpsReverseLookupException;
+import com.fhoner.exifrename.core.exception.TagEmptyException;
+import com.fhoner.exifrename.core.exception.TagNotFoundException;
 import com.fhoner.exifrename.core.model.Address;
 import com.fhoner.exifrename.core.model.OSMRecord;
-import com.fhoner.exifrename.core.service.AddressService;
-import com.fhoner.exifrename.core.service.GeoService;
+import com.fhoner.exifrename.core.util.MetadataUtil;
+import com.google.inject.Inject;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.text.TextStringBuilder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Log4j2
 @Getter
-public class FileFormatter {
+public class FileFormatterImpl implements FileFormatter {
 
     private static final String UNKNOWN_DATETIME = "[No-Date]";
     private static final String UNKNOWN_GPS = "[No-GPS]";
 
-    private static final List<String> SEPARATOR_CHARS = Arrays.asList(new String[]{" ", ",", "-"});
+    private static final List<String> SEPARATOR_CHARS = Arrays.asList(" ", ",", "-");
     private static final String DEFAULT_SEPARATOR = " ";
 
     private static final String TOWN = "%t";
@@ -31,7 +37,7 @@ public class FileFormatter {
     private static final String STATE = "%S";
     private static final String COUNTRY = "%C";
     private static final String COUNTRY_CODE = "%r";
-    private static final List<String> LOCATION_DATA = Arrays.asList(new String[]{TOWN, COUNTY, STATE, COUNTRY, COUNTRY_CODE});
+    private static final List<String> LOCATION_DATA = Arrays.asList(TOWN, COUNTY, STATE, COUNTRY, COUNTRY_CODE);
 
     private static final String YEAR_FOUR = "%y";
     private static final String YEAR_TWO = "%Y";
@@ -40,19 +46,15 @@ public class FileFormatter {
     private static final String HOUR = "%h";
     private static final String MINUTE = "%M";
     private static final String SECOND = "%s";
-    private static final List<String> DATETIME_DATA = Arrays.asList(new String[]{YEAR_FOUR, YEAR_TWO, MONTH, DAY, HOUR, MINUTE, SECOND});
+    private static final List<String> DATETIME_DATA = Arrays.asList(YEAR_FOUR, YEAR_TWO, MONTH, DAY, HOUR, MINUTE, SECOND);
 
-    private static GeoService geoService = new GeoService();
+    private final GeoService geoService;
+    private final AddressService addressService;
 
-    private AddressService addressService;
-    private Map<String, Tag> tags;
-    private String value;
-    private List<Exception> errors = new ArrayList<>();
-
-    public FileFormatter(String value, Map<String, Tag> tags) {
-        this.value = value;
-        this.tags = tags;
-        this.addressService = new AddressService(tags);
+    @Inject
+    public FileFormatterImpl(GeoService geoService, AddressService addressService) {
+        this.geoService = geoService;
+        this.addressService = addressService;
     }
 
     /**
@@ -61,50 +63,53 @@ public class FileFormatter {
      * @return Formatted string.
      * @throws Exception
      */
-    public String format() {
+    public String format(String value, Map<String, Tag> tags) {
         try {
-            insertLocationData();
+            value = insertLocationData(value, tags);
         } catch (TagEmptyException | GpsReverseLookupException ex) {
-            errors.add(ex);
+            log.error(ex);
         }
 
         try {
-            insertDateTime();
+            value = insertDateTime(value, tags);
         } catch (TagNotFoundException ex) {
-            errors.add(ex);
+            log.error(ex);
         }
 
-        replaceVariables(LOCATION_DATA, UNKNOWN_GPS);
-        replaceVariables(DATETIME_DATA, UNKNOWN_DATETIME);
-        postFormat();
+        value = replaceVariables(value, LOCATION_DATA, UNKNOWN_GPS);
+        value = replaceVariables(value, DATETIME_DATA, UNKNOWN_DATETIME);
+        value = postFormat(value);
         return value;
     }
 
-    private void insertLocationData() throws TagEmptyException, GpsReverseLookupException {
-        if (hasLocation()) {
+    private String insertLocationData(String value, Map<String, Tag> tags)
+            throws TagEmptyException, GpsReverseLookupException {
+        if (hasLocation(value)) {
             log.debug("location information needed");
-            OSMRecord osmrec = addressService.getAddress();
+            OSMRecord osmrec = addressService.getAddress(tags);
             Address address = osmrec.getAddress();
-            String v = address.getVillage();
-            insertValueNullsafe(TOWN, address.getVillage());
-            insertValueNullsafe(COUNTY, address.getCounty());
-            insertValueNullsafe(STATE, address.getState());
-            insertValueNullsafe(COUNTRY, address.getCountry());
-            insertValueNullsafe(COUNTRY_CODE, address.getCountryCode());
+            value = insertValueNullsafe(value, TOWN, address.getVillage());
+            value = insertValueNullsafe(value, COUNTY, address.getCounty());
+            value = insertValueNullsafe(value, STATE, address.getState());
+            value = insertValueNullsafe(value, COUNTRY, address.getCountry());
+            value = insertValueNullsafe(value, COUNTRY_CODE, address.getCountryCode());
+            return value;
         } else {
             log.debug("no location information needed; skip API call");
         }
+        return value;
     }
 
-    private void insertValueNullsafe(String variable, String content) {
+    private String insertValueNullsafe(String value, String variable, String content) {
         if (content != null) {
-            this.value = this.value.replace(variable, content);
+            return value.replace(variable, content);
         } else {
             log.info("information not available for " + variable);
+            return value;
         }
     }
 
-    private void insertDateTime() throws TagNotFoundException {
+    private String insertDateTime(String value, Map<String, Tag> tags) throws TagNotFoundException {
         LocalDateTime date = MetadataUtil.getDateTime(tags);
         value = value.replace(YEAR_FOUR, formatDateTime("yyyy", date));
         value = value.replace(YEAR_TWO, formatDateTime("yy", date));
@@ -113,9 +118,10 @@ public class FileFormatter {
         value = value.replace(HOUR, formatDateTime("HH", date));
         value = value.replace(MINUTE, formatDateTime("mm", date));
         value = value.replace(SECOND, formatDateTime("ss", date));
+        return value;
     }
 
-    private boolean hasLocation() {
+    private boolean hasLocation(String value) {
         for (String s : LOCATION_DATA) {
             if (value.contains(s)) {
                 return true;
@@ -135,7 +141,7 @@ public class FileFormatter {
      * @param variables
      * @param replacement
      */
-    private void replaceVariables(List<String> variables, String replacement) {
+    private String replaceVariables(String value, List<String> variables, String replacement) {
         boolean removed = false;
         for (String s : variables) {
             removed = removed | value.contains(s);
@@ -144,19 +150,22 @@ public class FileFormatter {
         if (removed) {
             value += replacement;
         }
+        return value;
     }
 
     /**
      * Does the post formatting actions: first remove unnecessary separators, then remove whitespaces on begin and
      * end.
      */
-    private void postFormat() {
+    private String postFormat(String value) {
+        String[] temp = new String[]{value};
         // replace double separators with a single one, e.g. "  [xy]" to " [xy]"
         SEPARATOR_CHARS.forEach(s -> {
             String pattern = Pattern.quote(s) + Pattern.quote(s) + "+";
-            value = value.replaceAll(pattern + Pattern.quote(UNKNOWN_GPS), s + UNKNOWN_GPS);
-            value = value.replaceAll(pattern + Pattern.quote(UNKNOWN_DATETIME), s + UNKNOWN_DATETIME);
+            temp[0] = temp[0].replaceAll(pattern + Pattern.quote(UNKNOWN_GPS), s + UNKNOWN_GPS);
+            temp[0] = temp[0].replaceAll(pattern + Pattern.quote(UNKNOWN_DATETIME), s + UNKNOWN_DATETIME);
         });
+        value = temp[0];
 
         // add separator before last []-tag if no one exists, e.g. "asd[unknown]" to "asd [unknown]"
         String regex = ".*[^ ]((\\[No-Date\\]|\\[No-GPS\\]))$";
@@ -171,6 +180,25 @@ public class FileFormatter {
         }
 
         value = value.trim();
+        return value;
+    }
+
+    /**
+     * Gets a filename based on the schema and the given exif data.
+     *
+     * @param exifData Exif metadata from picture.
+     * @return The formatted filename.
+     * @throws Exception Thrown when values could not be extracted from tags.
+     */
+    public String formatFilename(String scheme, @NonNull Metadata exifData) {
+        try {
+            Map<String, Tag> tags = MetadataUtil.getTags(exifData);
+            String formatted = format(scheme, tags);
+            return formatted.replace("/", "-");
+        } catch (Exception ex) {
+            log.error(ex);
+            throw ex;
+        }
     }
 
 }

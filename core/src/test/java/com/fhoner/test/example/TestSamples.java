@@ -1,10 +1,14 @@
 package com.fhoner.test.example;
 
-import com.adobe.internal.xmp.*;
+import com.adobe.internal.xmp.XMPConst;
+import com.adobe.internal.xmp.XMPMeta;
+import com.adobe.internal.xmp.XMPMetaFactory;
 import com.adobe.internal.xmp.options.SerializeOptions;
-import com.fhoner.exifrename.core.service.FileService;
+import com.fhoner.exifrename.core.service.FileServiceImpl;
+import com.fhoner.exifrename.core.service.GuiceModule;
 import com.fhoner.exifrename.core.tagging.XmpParser;
-import com.fhoner.exifrename.core.util.FilenamePattern;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.icafe4j.image.meta.Metadata;
 import com.icafe4j.image.meta.iptc.IPTCApplicationTag;
 import com.icafe4j.image.meta.iptc.IPTCDataSet;
@@ -13,30 +17,28 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Log4j2
 public class TestSamples {
 
+    private final Injector injector = Guice.createInjector(new GuiceModule());
+
     @Test
-    @Ignore
     public void sampleRenaming() {
-        String source = "/home/fhoner/Desktop/source";
-        String dest = "/home/fhoner/Desktop/dest";
-        FilenamePattern pattern = FilenamePattern.fromString("%y-%m-%d-%h-%M-%s Motorrad %r %t");
+        String source = "/Users/fho/Desktop/test";
+        String dest = "/Users/fho/Desktop/dest";
+        String pattern = "%y-%m-%d-%h-%M-%s Motorrad %r %t";
 
         try {
-            FileService service = new FileService();
+            FileServiceImpl service = injector.getInstance(FileServiceImpl.class);
             service.addFiles(source);
             service.formatFiles(pattern, dest);
-            service.getErrors().forEach((k, arr) -> {
-                for (Exception ex : arr) {
-                    System.out.print(k);
-                    System.out.println("    > " + ex.getMessage());
-                }
-            });
         } catch (FileNotFoundException ex) {
             log.error("directory not found", ex);
         } catch (IOException ex) {

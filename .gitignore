@@ -3,3 +3,6 @@ target
 *.iml
 */build/**
 .gradle
+core/out
+rename-ui/out
+all.log

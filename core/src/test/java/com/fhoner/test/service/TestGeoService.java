@@ -6,7 +6,7 @@ import com.drew.metadata.Tag;
 import com.fhoner.exifrename.core.exception.GpsReverseLookupException;
 import com.fhoner.exifrename.core.model.GpsRecord;
 import com.fhoner.exifrename.core.model.OSMRecord;
-import com.fhoner.exifrename.core.service.GeoService;
+import com.fhoner.exifrename.core.service.GeoServiceImpl;
 import com.fhoner.exifrename.core.util.MetadataUtil;
 import org.junit.Before;
 import org.junit.Rule;
@@ -18,8 +18,10 @@ import java.nio.file.Files;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static org.mockserver.model.Parameter.param;
@@ -34,7 +36,7 @@ public class TestGeoService {
     private static final String TAG_GPS_LONG_REF = "GPS/GPS Longitude Ref";
     private static final String TAG_GPS_LONG = "GPS/GPS Longitude";
 
-    private GeoService geoService;
+    private GeoServiceImpl geoService;
 
     private String latStr;
     private String longStr;
@@ -49,7 +51,7 @@ public class TestGeoService {
         File file = new File(Objects.requireNonNull(getClass().getClassLoader().getResource(SAMPLE_IMAGE_NAME)).getFile());
         Metadata exif = ImageMetadataReader.readMetadata(file);
         Map<String, Tag> tags = MetadataUtil.getTags(exif);
-        this.geoService = new GeoService("http://127.0.0.1:" + mockServerRule.getPort() + "/osm");
+        this.geoService = new GeoServiceImpl("http://127.0.0.1:" + mockServerRule.getPort() + "/osm/reverse?format=json&lat=${latitude}&lon=${longtitude}&addressdetails=1");
         latStr = tags.get(TAG_GPS_LAT_REF).getDescription() + " " + tags.get(TAG_GPS_LAT).getDescription();
         longStr = tags.get(TAG_GPS_LONG_REF).getDescription() + " " + tags.get(TAG_GPS_LONG).getDescription();
         lat = GpsRecord.parseString(latStr);
