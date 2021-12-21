@@ -102,8 +102,8 @@ public class GeoServiceImpl implements GeoService {
             log.info("blocking API due to time restrictions");
         }
         while (System.currentTimeMillis() < toReach) {
-            Thread.sleep(200);
-            log.trace("blocking api for 200ms...");
+            Thread.sleep(100);
+            log.trace("blocking api for 100ms...");
         }
     }
 

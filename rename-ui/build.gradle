@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'org.openjfx.javafxplugin' version '0.0.10'
     id 'com.peterabeles.gversion' version '1.10'
 }
 
@@ -25,11 +25,10 @@ repositories {
 
 dependencies {
     implementation project(":core")
-    implementation("org.apache.logging.log4j:log4j-core:2.14.1")
-    compileOnly 'org.projectlombok:lombok:1.18.20'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    implementation("org.apache.logging.log4j:log4j-core:2.17.0")
+    compileOnly("org.projectlombok:lombok:1.18.22")
+    annotationProcessor("org.projectlombok:lombok:1.18.22")
     implementation("com.google.inject:guice:5.0.1")
-    implementation("net.jmob:guice.conf:1.4.3")
     runtimeOnly("org.openjfx:javafx-graphics:$javafx.version:win")
     runtimeOnly("org.openjfx:javafx-graphics:$javafx.version:linux")
     runtimeOnly("org.openjfx:javafx-graphics:$javafx.version:mac")
