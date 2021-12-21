@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'com.peterabeles.gversion' version '1.10'
 }
 
 compileJava {
@@ -48,3 +49,11 @@ jar {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
+
+gversion {
+    srcDir = "src/main/java/"
+    classPackage = "com.fhoner.exifrename.renameui"
+    className = "RenameUIVersion"
+}
+
+project.compileJava.dependsOn(createVersionFile)

@@ -1,13 +1,20 @@
 package com.fhoner.exifrename.renameui.controller;
 
-import com.fhoner.exifrename.renameui.util.GitRevisionUtil;
+import com.fhoner.exifrename.renameui.RenameUIVersion;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
-import javafx.fxml.*;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.stage.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
@@ -149,13 +156,11 @@ public class RenameController implements Initializable {
     }
 
     private void showVersion() {
-        try {
-            GitRevisionUtil git = new GitRevisionUtil();
-            String hash = "#" + git.get(GitRevisionUtil.Key.HASH);
-            lblVersion.setText(hash);
-        } catch (IOException ex) {
-            lblVersion.setText("version unavailable");
+        String rev = "rev" + RenameUIVersion.GIT_REVISION;
+        if (RenameUIVersion.DIRTY == 1) {
+            rev += "-dirty";
         }
+        lblVersion.setText(rev);
     }
 
     private void loadPreferences() {
